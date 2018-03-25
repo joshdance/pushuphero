@@ -8,20 +8,38 @@
 
 /* Begin PBXBuildFile section */
 		4213EB9820429638009B2C01 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4213EB9720429638009B2C01 /* AppDelegate.swift */; };
-		4213EB9A20429638009B2C01 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4213EB9920429638009B2C01 /* ViewController.swift */; };
 		4213EB9D20429638009B2C01 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4213EB9B20429638009B2C01 /* Main.storyboard */; };
 		4213EB9F20429638009B2C01 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4213EB9E20429638009B2C01 /* Assets.xcassets */; };
 		4213EBA220429638009B2C01 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4213EBA020429638009B2C01 /* LaunchScreen.storyboard */; };
+		424E3A70205101C100020A8E /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424E3A6F205101C100020A8E /* CustomCell.swift */; };
+		424E62BF2060D0890094FABA /* hollowtap.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62B72060D0890094FABA /* hollowtap.aif */; };
+		424E62C02060D0890094FABA /* tripletbeep.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62B82060D0890094FABA /* tripletbeep.wav */; };
+		424E62C12060D0890094FABA /* shorttap.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62B92060D0890094FABA /* shorttap.aif */; };
+		424E62C22060D0890094FABA /* scaleup.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BA2060D0890094FABA /* scaleup.aif */; };
+		424E62C32060D0890094FABA /* oblivion.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BB2060D0890094FABA /* oblivion.wav */; };
+		424E62C42060D0890094FABA /* pingtone.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BC2060D0890094FABA /* pingtone.aif */; };
+		424E62C52060D0890094FABA /* upward.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BD2060D0890094FABA /* upward.wav */; };
+		424E62C62060D0890094FABA /* charging.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BE2060D0890094FABA /* charging.wav */; };
+		42C8F2A22047DB6800F4486C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C8F2A12047DB6800F4486C /* ViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		4213EB9420429638009B2C01 /* buttons.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = buttons.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4213EB9720429638009B2C01 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		4213EB9920429638009B2C01 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		4213EB9C20429638009B2C01 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4213EB9E20429638009B2C01 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4213EBA120429638009B2C01 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4213EBA320429638009B2C01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		424E3A6F205101C100020A8E /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
+		424E62B72060D0890094FABA /* hollowtap.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = hollowtap.aif; sourceTree = "<group>"; };
+		424E62B82060D0890094FABA /* tripletbeep.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tripletbeep.wav; sourceTree = "<group>"; };
+		424E62B92060D0890094FABA /* shorttap.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = shorttap.aif; sourceTree = "<group>"; };
+		424E62BA2060D0890094FABA /* scaleup.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = scaleup.aif; sourceTree = "<group>"; };
+		424E62BB2060D0890094FABA /* oblivion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = oblivion.wav; sourceTree = "<group>"; };
+		424E62BC2060D0890094FABA /* pingtone.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = pingtone.aif; sourceTree = "<group>"; };
+		424E62BD2060D0890094FABA /* upward.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = upward.wav; sourceTree = "<group>"; };
+		424E62BE2060D0890094FABA /* charging.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = charging.wav; sourceTree = "<group>"; };
+		42C8F2A12047DB6800F4486C /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +72,31 @@
 		4213EB9620429638009B2C01 /* buttons */ = {
 			isa = PBXGroup;
 			children = (
+				42C8F2A12047DB6800F4486C /* ViewController.swift */,
 				4213EB9720429638009B2C01 /* AppDelegate.swift */,
-				4213EB9920429638009B2C01 /* ViewController.swift */,
 				4213EB9B20429638009B2C01 /* Main.storyboard */,
 				4213EB9E20429638009B2C01 /* Assets.xcassets */,
+				424E62B62060D0890094FABA /* sound effects */,
 				4213EBA020429638009B2C01 /* LaunchScreen.storyboard */,
 				4213EBA320429638009B2C01 /* Info.plist */,
+				424E3A6F205101C100020A8E /* CustomCell.swift */,
 			);
 			path = buttons;
+			sourceTree = "<group>";
+		};
+		424E62B62060D0890094FABA /* sound effects */ = {
+			isa = PBXGroup;
+			children = (
+				424E62B72060D0890094FABA /* hollowtap.aif */,
+				424E62B82060D0890094FABA /* tripletbeep.wav */,
+				424E62B92060D0890094FABA /* shorttap.aif */,
+				424E62BA2060D0890094FABA /* scaleup.aif */,
+				424E62BB2060D0890094FABA /* oblivion.wav */,
+				424E62BC2060D0890094FABA /* pingtone.aif */,
+				424E62BD2060D0890094FABA /* upward.wav */,
+				424E62BE2060D0890094FABA /* charging.wav */,
+			);
+			path = "sound effects";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -123,9 +158,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				424E62C42060D0890094FABA /* pingtone.aif in Resources */,
 				4213EBA220429638009B2C01 /* LaunchScreen.storyboard in Resources */,
+				424E62C12060D0890094FABA /* shorttap.aif in Resources */,
+				424E62C52060D0890094FABA /* upward.wav in Resources */,
+				424E62C32060D0890094FABA /* oblivion.wav in Resources */,
+				424E62C02060D0890094FABA /* tripletbeep.wav in Resources */,
+				424E62BF2060D0890094FABA /* hollowtap.aif in Resources */,
 				4213EB9F20429638009B2C01 /* Assets.xcassets in Resources */,
 				4213EB9D20429638009B2C01 /* Main.storyboard in Resources */,
+				424E62C62060D0890094FABA /* charging.wav in Resources */,
+				424E62C22060D0890094FABA /* scaleup.aif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,7 +179,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4213EB9A20429638009B2C01 /* ViewController.swift in Sources */,
+				42C8F2A22047DB6800F4486C /* ViewController.swift in Sources */,
+				424E3A70205101C100020A8E /* CustomCell.swift in Sources */,
 				4213EB9820429638009B2C01 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -275,6 +319,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4YEP43V2YP;
 				INFOPLIST_FILE = buttons/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = wild.buttons;
@@ -289,6 +334,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4YEP43V2YP;
 				INFOPLIST_FILE = buttons/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = wild.buttons;
