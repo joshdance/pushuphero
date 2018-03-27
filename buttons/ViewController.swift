@@ -19,7 +19,6 @@ var pushupNumber = 0
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var middleTextField: UITextField!
-    @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var numberLabel: UILabel!
     @IBOutlet weak var pushupTableView: UITableView!
     @IBOutlet weak var upButton: UIButton!
@@ -284,8 +283,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         formatter.dateFormat = "MMM d yyyy, h:mm:ss a"
         let formattedDate = formatter.string(from: (myArray.last!.dateOfSave))
-        
-        dateLabel.text = formattedDate
         
         pushupTableView.reloadData()
     }
