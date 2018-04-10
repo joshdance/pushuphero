@@ -297,7 +297,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     @IBAction func tappedDownButton(_ sender: Any) {
         view.backgroundColor = UIColor.orange
         playSound(sound: Sounds.downSound)
-        pushupNumber = pushupNumber - 1
+        if pushupNumber != 0 {
+            pushupNumber = pushupNumber - 1
+        }
         numberLabel.text = String(pushupNumber)
     }
     
