@@ -15,6 +15,8 @@ var formatter = DateFormatter()
 var myArray:[DataObject] = []
 var randomPushupNumber = 7
 var pushupNumber = 0
+var popColor = #colorLiteral(red: 0.2588235294, green: 0.9607843137, blue: 0.6196078431, alpha: 1)
+var borderColor = #colorLiteral(red: 0.7843137255, green: 0.7843137255, blue: 0.7843137255, alpha: 1)
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate {
     
@@ -27,6 +29,14 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     @IBOutlet weak var pushupsThisWeekLabel: UILabel!
     @IBOutlet weak var pushupsThisYearLabel: UILabel!
     @IBOutlet weak var pushupsThisMonthLabel: UILabel!
+    @IBOutlet weak var saveButton: UIButton!
+    
+    
+    @IBOutlet weak var dailyBox: UIView!
+    @IBOutlet weak var weeklyBox: UIView!
+    @IBOutlet weak var monthlyBox: UIView!
+    @IBOutlet weak var yearlyBox: UIView!
+    
     
     var audioPlayer = AVAudioPlayer()
     
@@ -71,6 +81,30 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         downLongPressRecognizer.minimumPressDuration = 0.3
         downLongPressRecognizer.delegate = self
         self.downButton.addGestureRecognizer(downLongPressRecognizer)
+        
+        upButton.layer.borderWidth = 2.0
+        upButton.backgroundColor = popColor
+        upButton.layer.borderColor = borderColor.cgColor
+        
+        downButton.layer.borderWidth = 2.0
+        downButton.backgroundColor = popColor
+        downButton.layer.borderColor = borderColor.cgColor
+        
+        saveButton.layer.borderWidth = 2.0
+        saveButton.backgroundColor = popColor
+        saveButton.layer.borderColor = borderColor.cgColor
+        
+        dailyBox.layer.borderWidth = 2.0
+        dailyBox.layer.borderColor = borderColor.cgColor
+        
+        weeklyBox.layer.borderWidth = 2.0
+        weeklyBox.layer.borderColor = borderColor.cgColor
+        
+        monthlyBox.layer.borderWidth = 2.0
+        monthlyBox.layer.borderColor = borderColor.cgColor
+        
+        yearlyBox.layer.borderWidth = 2.0
+        yearlyBox.layer.borderColor = borderColor.cgColor
         
         calculatePushupsToday()
     }

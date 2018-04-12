@@ -29,7 +29,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XR3-vN-toB" userLabel="monthView">
                                 <rect key="frame" x="125" y="20" width="125" height="95"/>
@@ -42,7 +42,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" red="1" green="0.071475625890000005" blue="0.61213985660000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="1" green="0.071475625890000005" blue="0.61213985660000003" alpha="0.0" colorSpace="calibratedRGB"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="a9Z-bt-bMg" userLabel="yearView">
                                 <rect key="frame" x="250" y="20" width="125" height="95"/>
@@ -55,7 +55,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="0.25098040700000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="0.25098040700000002" alpha="0.0" colorSpace="calibratedRGB"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KuG-4X-ajl">
                                 <rect key="frame" x="0.0" y="115" width="250" height="190.5"/>
@@ -75,11 +75,11 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" cyan="1" magenta="0.0" yellow="0.0" black="0.0" alpha="1" colorSpace="custom" customColorSpace="genericCMYKColorSpace"/>
+                                <color key="backgroundColor" cyan="1" magenta="0.0" yellow="0.0" black="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericCMYKColorSpace"/>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gl2-lK-UTM">
                                 <rect key="frame" x="250" y="353.5" width="125" height="48"/>
-                                <color key="backgroundColor" red="0.65226236979166663" green="0.64426338490000001" blue="0.92352973090277779" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.25882352941176467" green="0.96078431372549022" blue="0.61960784313725492" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <state key="normal" title="Save"/>
                                 <connections>
                                     <action selector="tappedSaveButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pCh-JZ-nvD"/>
@@ -138,7 +138,7 @@
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QMv-cW-T75">
                                 <rect key="frame" x="250" y="115" width="125" height="96"/>
-                                <color key="backgroundColor" cyan="0.12706163194444445" magenta="0.92401801215277779" yellow="0.064860026041666671" black="0.0" alpha="1" colorSpace="custom" customColorSpace="genericCMYKColorSpace"/>
+                                <color key="backgroundColor" red="0.30980392156862746" green="0.97647058823529409" blue="0.6470588235294118" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <state key="normal" title="Up ⬆️"/>
                                 <connections>
                                     <action selector="tappedUpButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Udm-N0-7UH"/>
@@ -146,7 +146,7 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="No7-Ly-mIV">
                                 <rect key="frame" x="250" y="211" width="125" height="95"/>
-                                <color key="backgroundColor" red="1" green="0.64426338490000001" blue="0.1027377005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.25882352941176467" green="0.96078431372549022" blue="0.61960784313725492" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <state key="normal" title="Down ⬇️"/>
                                 <connections>
                                     <action selector="tappedDownButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zDa-Pp-wZk"/>
@@ -155,7 +155,7 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pushup Hero" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KOe-1w-JAH">
                                 <rect key="frame" x="0.0" y="353.5" width="250" height="46.5"/>
                                 <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="29"/>
-                                <color key="textColor" red="0.14634400593789715" green="0.92352973090277779" blue="0.24848271836583807" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="textColor" red="0.25882352941176467" green="0.96078431372549022" blue="0.61960784313725492" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -207,15 +207,20 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="dailyBox" destination="KuG-4X-ajl" id="a4m-35-yun"/>
                         <outlet property="downButton" destination="No7-Ly-mIV" id="Drt-lI-nec"/>
                         <outlet property="middleTextField" destination="5zl-36-JiR" id="hSp-fm-9ky"/>
+                        <outlet property="monthlyBox" destination="XR3-vN-toB" id="tZ6-oD-P4s"/>
                         <outlet property="numberLabel" destination="6Ay-aK-i1I" id="P13-rf-Yvk"/>
                         <outlet property="pushupTableView" destination="EMn-Fa-yub" id="7Rk-Gn-Z7R"/>
                         <outlet property="pushupsThisMonthLabel" destination="YKO-hv-9By" id="Geq-gc-JtL"/>
                         <outlet property="pushupsThisWeekLabel" destination="2ph-Da-OlK" id="p68-Gg-19F"/>
                         <outlet property="pushupsThisYearLabel" destination="Pno-xn-Hy7" id="NmC-8g-t8I"/>
                         <outlet property="pushupsTodayLabel" destination="G4z-2Y-IBb" id="DCp-sy-fdX"/>
+                        <outlet property="saveButton" destination="Gl2-lK-UTM" id="OtW-hZ-mmR"/>
                         <outlet property="upButton" destination="QMv-cW-T75" id="1Gn-VR-6Sj"/>
+                        <outlet property="weeklyBox" destination="BHM-fg-ijI" id="HUJ-Po-6Fp"/>
+                        <outlet property="yearlyBox" destination="a9Z-bt-bMg" id="hxy-wc-dju"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
