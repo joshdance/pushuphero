@@ -188,7 +188,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             }
         } //end for workout
         
-        let weeksPushupLabelText : String = String(thisWeeksPushups) + " pushups this week"
+        let weeksPushupLabelText : String = String(thisWeeksPushups)
         pushupsThisWeekLabel.text = weeksPushupLabelText
     }
     
@@ -210,7 +210,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             }
         } //end for workout
         
-        let monthPushupLabelText : String = String(thisMonthsPushups) + " pushups this month"
+        let monthPushupLabelText : String = String(thisMonthsPushups)
         pushupsThisMonthLabel.text = monthPushupLabelText
     }
     
@@ -232,12 +232,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             }
         } //end for workout
         
-        let yearsPushupLabelText : String = String(thisYearsPushups) + " pushups this year"
+        let yearsPushupLabelText : String = String(thisYearsPushups)
         pushupsThisYearLabel.text = yearsPushupLabelText
     }
     
     @IBAction func tappedSaveButton(_ sender: Any) {
-        view.backgroundColor = UIColor.blue
         
         //add the saved Text to the array.
         let newDataObject = DataObject(argumentListOfStrings: [], argumentDateOfSave: Date(), argumentDateOfWorkout: Date(),  argumentNumberOfPushups: Int())
@@ -322,14 +321,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     @IBAction func tappedUpButton(_ sender: Any) {
-        view.backgroundColor = UIColor.green
         playSound(sound: Sounds.upSound)
         pushupNumber = pushupNumber + 1
         numberLabel.text = String(pushupNumber)
     }
     
     @IBAction func tappedDownButton(_ sender: Any) {
-        view.backgroundColor = UIColor.orange
+        //view.backgroundColor = UIColor.orange
         playSound(sound: Sounds.downSound)
         if pushupNumber != 0 {
             pushupNumber = pushupNumber - 1
