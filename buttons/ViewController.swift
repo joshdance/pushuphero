@@ -124,7 +124,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     @objc func upHold(press:UILongPressGestureRecognizer) {
         if press.state == .began {
             addChunkPushup()
-            holdTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(addChunkPushup), userInfo: nil, repeats: true)
+            holdTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(addChunkPushup), userInfo: nil, repeats: true)
         }
         if press.state == .cancelled || press.state == .ended {
             holdTimer.invalidate()
@@ -134,7 +134,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     @objc func downHold(press:UILongPressGestureRecognizer) {
         if press.state == .began {
             removeChunkPushup()
-            holdTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(removeChunkPushup), userInfo: nil, repeats: true)
+            holdTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(removeChunkPushup), userInfo: nil, repeats: true)
         }
         if press.state == .cancelled || press.state == .ended {
             holdTimer.invalidate()
@@ -144,15 +144,20 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     //func changeChunk - give it the + or -?
     
     @objc func addChunkPushup() {
-        view.backgroundColor = UIColor.yellow
         pushupNumber = pushupNumber + 10
         numberLabel.text = String(pushupNumber)
+        playSound(sound: Sounds.upSound)
     }
     
     @objc func removeChunkPushup() {
-        view.backgroundColor = UIColor.red
-        pushupNumber = pushupNumber - 10
+        //if pushupNumber is less than = 9 or less than 9, set to 0
+        if pushupNumber >= 9 {
+            pushupNumber = pushupNumber - 10
+        } else {
+            pushupNumber = 0
+        }
         numberLabel.text = String(pushupNumber)
+        playSound(sound: Sounds.downSound)
     }
     
     func calculatePushupsToday() {
@@ -170,7 +175,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                 todaysPushupNumber = todaysPushupNumber + workout.numberOfPushups
             }
         } //end for workout
-        let todaysPushupLabelText : String = String(todaysPushupNumber) + " pushups today"
+        let todaysPushupLabelText : String = String(todaysPushupNumber)
         pushupsTodayLabel.text = todaysPushupLabelText
     } //end calculatePushupsToday
     
@@ -311,7 +316,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     @IBAction func tappedLoadButton(_ sender: Any) {
-        view.backgroundColor = UIColor.green
         loadData()
         
         formatter.dateFormat = "MMM d yyyy, h:mm:ss a"
@@ -327,7 +331,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     @IBAction func tappedDownButton(_ sender: Any) {
-        //view.backgroundColor = UIColor.orange
         playSound(sound: Sounds.downSound)
         if pushupNumber != 0 {
             pushupNumber = pushupNumber - 1
