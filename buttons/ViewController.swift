@@ -85,26 +85,33 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         upButton.layer.borderWidth = 2.0
         upButton.backgroundColor = popColor
         upButton.layer.borderColor = borderColor.cgColor
+        upButton.layer.cornerRadius = 10.0
         
         downButton.layer.borderWidth = 2.0
         downButton.backgroundColor = popColor
         downButton.layer.borderColor = borderColor.cgColor
+        downButton.layer.cornerRadius = 10.0
         
         saveButton.layer.borderWidth = 2.0
         saveButton.backgroundColor = popColor
         saveButton.layer.borderColor = borderColor.cgColor
+        saveButton.layer.cornerRadius = 10.0
         
         dailyBox.layer.borderWidth = 2.0
         dailyBox.layer.borderColor = borderColor.cgColor
+        dailyBox.layer.cornerRadius = 10.0
         
         weeklyBox.layer.borderWidth = 2.0
         weeklyBox.layer.borderColor = borderColor.cgColor
+        weeklyBox.layer.cornerRadius = 10.0
         
         monthlyBox.layer.borderWidth = 2.0
         monthlyBox.layer.borderColor = borderColor.cgColor
+        monthlyBox.layer.cornerRadius = 10.0
         
         yearlyBox.layer.borderWidth = 2.0
         yearlyBox.layer.borderColor = borderColor.cgColor
+        yearlyBox.layer.cornerRadius = 10.0
         
         calculatePushupsToday()
     }
@@ -113,9 +120,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let path = Bundle.main.path(forResource: sound, ofType: nil)!
         let url = URL(fileURLWithPath: path)
         
+        let audioSession = AVAudioSession.sharedInstance()
+        try!audioSession.setCategory(AVAudioSessionCategoryPlayback, with: AVAudioSessionCategoryOptions.duckOthers)
+        
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
             audioPlayer.play()
+            //TODO research setActive more - https://thedon.me/2016/03/15/avaudiosession-and-ducking/
         } catch {
             print("couldn't load the file")
         }
