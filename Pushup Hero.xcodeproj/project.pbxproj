@@ -135,7 +135,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 4213EB8F20429638009B2C01 /* Build configuration list for PBXProject "buttons" */;
+			buildConfigurationList = 4213EB8F20429638009B2C01 /* Build configuration list for PBXProject "Pushup Hero" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -347,7 +347,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		4213EB8F20429638009B2C01 /* Build configuration list for PBXProject "buttons" */ = {
+		4213EB8F20429638009B2C01 /* Build configuration list for PBXProject "Pushup Hero" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4213EBA420429638009B2C01 /* Debug */,
