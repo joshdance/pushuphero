@@ -13,7 +13,6 @@ var myDataObject = DataObject(argumentListOfStrings: [], argumentDateOfSave: Dat
 var savedText = ""
 var formatter = DateFormatter()
 var myArray:[DataObject] = []
-var randomPushupNumber = 7
 var pushupNumber = 0
 var popColor = #colorLiteral(red: 0.2588235294, green: 0.9607843137, blue: 0.6196078431, alpha: 1)
 var borderColor = #colorLiteral(red: 0.7843137255, green: 0.7843137255, blue: 0.7843137255, alpha: 1)
@@ -65,6 +64,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         super.viewDidLoad()
         
         loadData()
+        
         playSound(sound: Sounds.startupSound)
         middleTextField.text = "Enter text here. Then save."
         
@@ -257,7 +257,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         //add the saved Text to the array.
         let newDataObject = DataObject(argumentListOfStrings: [], argumentDateOfSave: Date(), argumentDateOfWorkout: Date(),  argumentNumberOfPushups: Int())
         
-        savedText = middleTextField.text!
+        if middleTextField.text != "Enter text here. Then save."
+        {
+            savedText = middleTextField.text!
+        } else {
+            savedText = ""
+        }
         newDataObject.listOfStrings.append(savedText)
         newDataObject.numberOfPushups = pushupNumber
         newDataObject.dateOfSave = Date()
@@ -325,16 +330,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         middleTextField.endEditing(true)
         playSound(sound: Sounds.saveSound)
     }
-    
-    @IBAction func tappedLoadButton(_ sender: Any) {
-        loadData()
         
-        formatter.dateFormat = "MMM d yyyy, h:mm:ss a"
-        let formattedDate = formatter.string(from: (myArray.last!.dateOfSave))
-        
-        pushupTableView.reloadData()
-    }
-    
     @IBAction func tappedUpButton(_ sender: Any) {
         playSound(sound: Sounds.upSound)
         pushupNumber = pushupNumber + 1
@@ -350,11 +346,20 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func loadData() {
-        //if we can get data back, get our data.
-        let ourData = NSKeyedUnarchiver.unarchiveObject(withFile: filePath) as! Array<DataObject>
-        myArray = ourData
+        let manager = FileManager.default
         
-        print("count of myArray = ", myArray.count)
+        if manager.fileExists(atPath: filePath) {
+            print("The file exists!")
+            
+            //if we can get data back, get our data.
+            let ourData = NSKeyedUnarchiver.unarchiveObject(withFile: filePath) as! Array<DataObject>
+            myArray = ourData
+            
+            print("count of myArray = ", myArray.count)
+            
+        } else {
+            print("The file DOES NOT exist! Mournful trumpets sound...")
+        }
     }
 
     override func didReceiveMemoryWarning() {

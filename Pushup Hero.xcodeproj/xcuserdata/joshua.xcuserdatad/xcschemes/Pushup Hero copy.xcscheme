@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4213EB9320429638009B2C01"
-               BuildableName = "buttons.app"
-               BlueprintName = "buttons"
+               BlueprintIdentifier = "4271A69020F88BE300C4C216"
+               BuildableName = "Pushup Hero copy.app"
+               BlueprintName = "Pushup Hero copy"
                ReferencedContainer = "container:Pushup Hero.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "429EC18620F5D3BB000E7075"
-            BuildableName = "Pushup Hero.app"
-            BlueprintName = "Pushup Hero"
+            BlueprintIdentifier = "4271A69020F88BE300C4C216"
+            BuildableName = "Pushup Hero copy.app"
+            BlueprintName = "Pushup Hero copy"
             ReferencedContainer = "container:Pushup Hero.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -55,9 +55,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "429EC18620F5D3BB000E7075"
-            BuildableName = "Pushup Hero.app"
-            BlueprintName = "Pushup Hero"
+            BlueprintIdentifier = "4271A69020F88BE300C4C216"
+            BuildableName = "Pushup Hero copy.app"
+            BlueprintName = "Pushup Hero copy"
             ReferencedContainer = "container:Pushup Hero.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -74,9 +74,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4213EB9320429638009B2C01"
-            BuildableName = "buttons.app"
-            BlueprintName = "buttons"
+            BlueprintIdentifier = "4271A69020F88BE300C4C216"
+            BuildableName = "Pushup Hero copy.app"
+            BlueprintName = "Pushup Hero copy"
             ReferencedContainer = "container:Pushup Hero.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

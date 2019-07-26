@@ -7,24 +7,37 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4213EB9820429638009B2C01 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4213EB9720429638009B2C01 /* AppDelegate.swift */; };
-		4213EB9D20429638009B2C01 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4213EB9B20429638009B2C01 /* Main.storyboard */; };
-		4213EB9F20429638009B2C01 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4213EB9E20429638009B2C01 /* Assets.xcassets */; };
-		4213EBA220429638009B2C01 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4213EBA020429638009B2C01 /* LaunchScreen.storyboard */; };
-		424E3A70205101C100020A8E /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424E3A6F205101C100020A8E /* CustomCell.swift */; };
-		424E62BF2060D0890094FABA /* hollowtap.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62B72060D0890094FABA /* hollowtap.aif */; };
-		424E62C02060D0890094FABA /* tripletbeep.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62B82060D0890094FABA /* tripletbeep.wav */; };
-		424E62C12060D0890094FABA /* shorttap.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62B92060D0890094FABA /* shorttap.aif */; };
-		424E62C22060D0890094FABA /* scaleup.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BA2060D0890094FABA /* scaleup.aif */; };
-		424E62C32060D0890094FABA /* oblivion.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BB2060D0890094FABA /* oblivion.wav */; };
-		424E62C42060D0890094FABA /* pingtone.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BC2060D0890094FABA /* pingtone.aif */; };
-		424E62C52060D0890094FABA /* upward.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BD2060D0890094FABA /* upward.wav */; };
-		424E62C62060D0890094FABA /* charging.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BE2060D0890094FABA /* charging.wav */; };
-		42C8F2A22047DB6800F4486C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C8F2A12047DB6800F4486C /* ViewController.swift */; };
+		4271A69220F88BE300C4C216 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C8F2A12047DB6800F4486C /* ViewController.swift */; };
+		4271A69320F88BE300C4C216 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424E3A6F205101C100020A8E /* CustomCell.swift */; };
+		4271A69420F88BE300C4C216 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4213EB9720429638009B2C01 /* AppDelegate.swift */; };
+		4271A69720F88BE300C4C216 /* pingtone.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BC2060D0890094FABA /* pingtone.aif */; };
+		4271A69820F88BE300C4C216 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4213EBA020429638009B2C01 /* LaunchScreen.storyboard */; };
+		4271A69920F88BE300C4C216 /* shorttap.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62B92060D0890094FABA /* shorttap.aif */; };
+		4271A69A20F88BE300C4C216 /* upward.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BD2060D0890094FABA /* upward.wav */; };
+		4271A69B20F88BE300C4C216 /* oblivion.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BB2060D0890094FABA /* oblivion.wav */; };
+		4271A69C20F88BE300C4C216 /* tripletbeep.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62B82060D0890094FABA /* tripletbeep.wav */; };
+		4271A69D20F88BE300C4C216 /* hollowtap.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62B72060D0890094FABA /* hollowtap.aif */; };
+		4271A69E20F88BE300C4C216 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4213EB9E20429638009B2C01 /* Assets.xcassets */; };
+		4271A69F20F88BE300C4C216 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4213EB9B20429638009B2C01 /* Main.storyboard */; };
+		4271A6A020F88BE300C4C216 /* charging.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BE2060D0890094FABA /* charging.wav */; };
+		4271A6A120F88BE300C4C216 /* scaleup.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BA2060D0890094FABA /* scaleup.aif */; };
+		429EC18820F5D3BB000E7075 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C8F2A12047DB6800F4486C /* ViewController.swift */; };
+		429EC18920F5D3BB000E7075 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424E3A6F205101C100020A8E /* CustomCell.swift */; };
+		429EC18A20F5D3BB000E7075 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4213EB9720429638009B2C01 /* AppDelegate.swift */; };
+		429EC18D20F5D3BB000E7075 /* pingtone.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BC2060D0890094FABA /* pingtone.aif */; };
+		429EC18E20F5D3BB000E7075 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4213EBA020429638009B2C01 /* LaunchScreen.storyboard */; };
+		429EC18F20F5D3BB000E7075 /* shorttap.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62B92060D0890094FABA /* shorttap.aif */; };
+		429EC19020F5D3BB000E7075 /* upward.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BD2060D0890094FABA /* upward.wav */; };
+		429EC19120F5D3BB000E7075 /* oblivion.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BB2060D0890094FABA /* oblivion.wav */; };
+		429EC19220F5D3BB000E7075 /* tripletbeep.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62B82060D0890094FABA /* tripletbeep.wav */; };
+		429EC19320F5D3BB000E7075 /* hollowtap.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62B72060D0890094FABA /* hollowtap.aif */; };
+		429EC19420F5D3BB000E7075 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4213EB9E20429638009B2C01 /* Assets.xcassets */; };
+		429EC19520F5D3BB000E7075 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4213EB9B20429638009B2C01 /* Main.storyboard */; };
+		429EC19620F5D3BB000E7075 /* charging.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BE2060D0890094FABA /* charging.wav */; };
+		429EC19720F5D3BB000E7075 /* scaleup.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BA2060D0890094FABA /* scaleup.aif */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4213EB9420429638009B2C01 /* buttons.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = buttons.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4213EB9720429638009B2C01 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4213EB9C20429638009B2C01 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4213EB9E20429638009B2C01 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -39,11 +52,28 @@
 		424E62BC2060D0890094FABA /* pingtone.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = pingtone.aif; sourceTree = "<group>"; };
 		424E62BD2060D0890094FABA /* upward.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = upward.wav; sourceTree = "<group>"; };
 		424E62BE2060D0890094FABA /* charging.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = charging.wav; sourceTree = "<group>"; };
+		4271A6A520F88BE300C4C216 /* Pushup Hero copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pushup Hero copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4271A6A620F88BE300C4C216 /* Pushup Hero copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Pushup Hero copy-Info.plist"; path = "/Users/joshua/Code/buttons/Pushup Hero copy-Info.plist"; sourceTree = "<absolute>"; };
+		429EC17620F5D362000E7075 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		429EC17820F5D362000E7075 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		429EC17B20F5D362000E7075 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		429EC17D20F5D363000E7075 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		429EC18020F5D363000E7075 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		429EC18220F5D363000E7075 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		429EC19B20F5D3BB000E7075 /* Pushup Hero.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pushup Hero.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		429EC19C20F5D3BB000E7075 /* buttons copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "buttons copy-Info.plist"; path = "/Users/joshua/Code/buttons/buttons copy-Info.plist"; sourceTree = "<absolute>"; };
 		42C8F2A12047DB6800F4486C /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		4213EB9120429638009B2C01 /* Frameworks */ = {
+		4271A69520F88BE300C4C216 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		429EC18B20F5D3BB000E7075 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -57,14 +87,18 @@
 			isa = PBXGroup;
 			children = (
 				4213EB9620429638009B2C01 /* buttons */,
+				429EC17520F5D362000E7075 /* Pushup Hero */,
 				4213EB9520429638009B2C01 /* Products */,
+				429EC19C20F5D3BB000E7075 /* buttons copy-Info.plist */,
+				4271A6A620F88BE300C4C216 /* Pushup Hero copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
 		4213EB9520429638009B2C01 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4213EB9420429638009B2C01 /* buttons.app */,
+				429EC19B20F5D3BB000E7075 /* Pushup Hero.app */,
+				4271A6A520F88BE300C4C216 /* Pushup Hero copy.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -99,24 +133,54 @@
 			path = "sound effects";
 			sourceTree = "<group>";
 		};
+		429EC17520F5D362000E7075 /* Pushup Hero */ = {
+			isa = PBXGroup;
+			children = (
+				429EC17620F5D362000E7075 /* AppDelegate.swift */,
+				429EC17820F5D362000E7075 /* ViewController.swift */,
+				429EC17A20F5D362000E7075 /* Main.storyboard */,
+				429EC17D20F5D363000E7075 /* Assets.xcassets */,
+				429EC17F20F5D363000E7075 /* LaunchScreen.storyboard */,
+				429EC18220F5D363000E7075 /* Info.plist */,
+			);
+			path = "Pushup Hero";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		4213EB9320429638009B2C01 /* buttons */ = {
+		4271A69020F88BE300C4C216 /* Pushup Hero copy */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4213EBA620429638009B2C01 /* Build configuration list for PBXNativeTarget "buttons" */;
+			buildConfigurationList = 4271A6A220F88BE300C4C216 /* Build configuration list for PBXNativeTarget "Pushup Hero copy" */;
 			buildPhases = (
-				4213EB9020429638009B2C01 /* Sources */,
-				4213EB9120429638009B2C01 /* Frameworks */,
-				4213EB9220429638009B2C01 /* Resources */,
+				4271A69120F88BE300C4C216 /* Sources */,
+				4271A69520F88BE300C4C216 /* Frameworks */,
+				4271A69620F88BE300C4C216 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = buttons;
+			name = "Pushup Hero copy";
 			productName = buttons;
-			productReference = 4213EB9420429638009B2C01 /* buttons.app */;
+			productReference = 4271A6A520F88BE300C4C216 /* Pushup Hero copy.app */;
+			productType = "com.apple.product-type.application";
+		};
+		429EC18620F5D3BB000E7075 /* Pushup Hero */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 429EC19820F5D3BB000E7075 /* Build configuration list for PBXNativeTarget "Pushup Hero" */;
+			buildPhases = (
+				429EC18720F5D3BB000E7075 /* Sources */,
+				429EC18B20F5D3BB000E7075 /* Frameworks */,
+				429EC18C20F5D3BB000E7075 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Pushup Hero";
+			productName = buttons;
+			productReference = 429EC19B20F5D3BB000E7075 /* Pushup Hero.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -125,12 +189,14 @@
 		4213EB8C20429638009B2C01 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0900;
+				LastSwiftUpdateCheck = 0940;
 				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "Joshua Dance";
 				TargetAttributes = {
-					4213EB9320429638009B2C01 = {
-						CreatedOnToolsVersion = 9.0;
+					4271A69020F88BE300C4C216 = {
+						ProvisioningStyle = Automatic;
+					};
+					429EC18620F5D3BB000E7075 = {
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -148,40 +214,69 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4213EB9320429638009B2C01 /* buttons */,
+				429EC18620F5D3BB000E7075 /* Pushup Hero */,
+				4271A69020F88BE300C4C216 /* Pushup Hero copy */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		4213EB9220429638009B2C01 /* Resources */ = {
+		4271A69620F88BE300C4C216 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				424E62C42060D0890094FABA /* pingtone.aif in Resources */,
-				4213EBA220429638009B2C01 /* LaunchScreen.storyboard in Resources */,
-				424E62C12060D0890094FABA /* shorttap.aif in Resources */,
-				424E62C52060D0890094FABA /* upward.wav in Resources */,
-				424E62C32060D0890094FABA /* oblivion.wav in Resources */,
-				424E62C02060D0890094FABA /* tripletbeep.wav in Resources */,
-				424E62BF2060D0890094FABA /* hollowtap.aif in Resources */,
-				4213EB9F20429638009B2C01 /* Assets.xcassets in Resources */,
-				4213EB9D20429638009B2C01 /* Main.storyboard in Resources */,
-				424E62C62060D0890094FABA /* charging.wav in Resources */,
-				424E62C22060D0890094FABA /* scaleup.aif in Resources */,
+				4271A69720F88BE300C4C216 /* pingtone.aif in Resources */,
+				4271A69820F88BE300C4C216 /* LaunchScreen.storyboard in Resources */,
+				4271A69920F88BE300C4C216 /* shorttap.aif in Resources */,
+				4271A69A20F88BE300C4C216 /* upward.wav in Resources */,
+				4271A69B20F88BE300C4C216 /* oblivion.wav in Resources */,
+				4271A69C20F88BE300C4C216 /* tripletbeep.wav in Resources */,
+				4271A69D20F88BE300C4C216 /* hollowtap.aif in Resources */,
+				4271A69E20F88BE300C4C216 /* Assets.xcassets in Resources */,
+				4271A69F20F88BE300C4C216 /* Main.storyboard in Resources */,
+				4271A6A020F88BE300C4C216 /* charging.wav in Resources */,
+				4271A6A120F88BE300C4C216 /* scaleup.aif in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		429EC18C20F5D3BB000E7075 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				429EC18D20F5D3BB000E7075 /* pingtone.aif in Resources */,
+				429EC18E20F5D3BB000E7075 /* LaunchScreen.storyboard in Resources */,
+				429EC18F20F5D3BB000E7075 /* shorttap.aif in Resources */,
+				429EC19020F5D3BB000E7075 /* upward.wav in Resources */,
+				429EC19120F5D3BB000E7075 /* oblivion.wav in Resources */,
+				429EC19220F5D3BB000E7075 /* tripletbeep.wav in Resources */,
+				429EC19320F5D3BB000E7075 /* hollowtap.aif in Resources */,
+				429EC19420F5D3BB000E7075 /* Assets.xcassets in Resources */,
+				429EC19520F5D3BB000E7075 /* Main.storyboard in Resources */,
+				429EC19620F5D3BB000E7075 /* charging.wav in Resources */,
+				429EC19720F5D3BB000E7075 /* scaleup.aif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		4213EB9020429638009B2C01 /* Sources */ = {
+		4271A69120F88BE300C4C216 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42C8F2A22047DB6800F4486C /* ViewController.swift in Sources */,
-				424E3A70205101C100020A8E /* CustomCell.swift in Sources */,
-				4213EB9820429638009B2C01 /* AppDelegate.swift in Sources */,
+				4271A69220F88BE300C4C216 /* ViewController.swift in Sources */,
+				4271A69320F88BE300C4C216 /* CustomCell.swift in Sources */,
+				4271A69420F88BE300C4C216 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		429EC18720F5D3BB000E7075 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				429EC18820F5D3BB000E7075 /* ViewController.swift in Sources */,
+				429EC18920F5D3BB000E7075 /* CustomCell.swift in Sources */,
+				429EC18A20F5D3BB000E7075 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,6 +295,22 @@
 			isa = PBXVariantGroup;
 			children = (
 				4213EBA120429638009B2C01 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		429EC17A20F5D362000E7075 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				429EC17B20F5D362000E7075 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		429EC17F20F5D363000E7075 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				429EC18020F5D363000E7075 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -314,30 +425,64 @@
 			};
 			name = Release;
 		};
-		4213EBA720429638009B2C01 /* Debug */ = {
+		4271A6A320F88BE300C4C216 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4YEP43V2YP;
-				INFOPLIST_FILE = buttons/Info.plist;
+				INFOPLIST_FILE = "Pushup Hero copy-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = wild.buttons;
+				PRODUCT_BUNDLE_IDENTIFIER = me.joshdance.pushuphero;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		4213EBA820429638009B2C01 /* Release */ = {
+		4271A6A420F88BE300C4C216 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4YEP43V2YP;
-				INFOPLIST_FILE = buttons/Info.plist;
+				INFOPLIST_FILE = "Pushup Hero copy-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = wild.buttons;
+				PRODUCT_BUNDLE_IDENTIFIER = me.joshdance.pushuphero;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		429EC19920F5D3BB000E7075 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4YEP43V2YP;
+				INFOPLIST_FILE = "buttons copy-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.joshdance.pushuphero;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		429EC19A20F5D3BB000E7075 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4YEP43V2YP;
+				INFOPLIST_FILE = "buttons copy-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.joshdance.pushuphero;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -356,11 +501,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4213EBA620429638009B2C01 /* Build configuration list for PBXNativeTarget "buttons" */ = {
+		4271A6A220F88BE300C4C216 /* Build configuration list for PBXNativeTarget "Pushup Hero copy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4213EBA720429638009B2C01 /* Debug */,
-				4213EBA820429638009B2C01 /* Release */,
+				4271A6A320F88BE300C4C216 /* Debug */,
+				4271A6A420F88BE300C4C216 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		429EC19820F5D3BB000E7075 /* Build configuration list for PBXNativeTarget "Pushup Hero" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				429EC19920F5D3BB000E7075 /* Debug */,
+				429EC19A20F5D3BB000E7075 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
