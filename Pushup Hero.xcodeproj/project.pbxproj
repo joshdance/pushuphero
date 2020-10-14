@@ -35,6 +35,10 @@
 		429EC19520F5D3BB000E7075 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4213EB9B20429638009B2C01 /* Main.storyboard */; };
 		429EC19620F5D3BB000E7075 /* charging.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BE2060D0890094FABA /* charging.wav */; };
 		429EC19720F5D3BB000E7075 /* scaleup.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BA2060D0890094FABA /* scaleup.aif */; };
+		429F90932537395900703051 /* DataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429F90922537395900703051 /* DataObject.swift */; };
+		429F90942537395900703051 /* DataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429F90922537395900703051 /* DataObject.swift */; };
+		429F909A25373B1F00703051 /* Sounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429F909925373B1F00703051 /* Sounds.swift */; };
+		429F909B25373B1F00703051 /* Sounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429F909925373B1F00703051 /* Sounds.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,14 +58,10 @@
 		424E62BE2060D0890094FABA /* charging.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = charging.wav; sourceTree = "<group>"; };
 		4271A6A520F88BE300C4C216 /* Pushup Hero copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pushup Hero copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4271A6A620F88BE300C4C216 /* Pushup Hero copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Pushup Hero copy-Info.plist"; path = "/Users/joshua/Code/buttons/Pushup Hero copy-Info.plist"; sourceTree = "<absolute>"; };
-		429EC17620F5D362000E7075 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		429EC17820F5D362000E7075 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		429EC17B20F5D362000E7075 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		429EC17D20F5D363000E7075 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		429EC18020F5D363000E7075 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		429EC18220F5D363000E7075 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		429EC19B20F5D3BB000E7075 /* Pushup Hero.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pushup Hero.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		429EC19C20F5D3BB000E7075 /* buttons copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "buttons copy-Info.plist"; path = "/Users/joshua/Code/buttons/buttons copy-Info.plist"; sourceTree = "<absolute>"; };
+		429F90922537395900703051 /* DataObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataObject.swift; sourceTree = "<group>"; };
+		429F909925373B1F00703051 /* Sounds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sounds.swift; sourceTree = "<group>"; };
 		42C8F2A12047DB6800F4486C /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -87,7 +87,6 @@
 			isa = PBXGroup;
 			children = (
 				4213EB9620429638009B2C01 /* buttons */,
-				429EC17520F5D362000E7075 /* Pushup Hero */,
 				4213EB9520429638009B2C01 /* Products */,
 				429EC19C20F5D3BB000E7075 /* buttons copy-Info.plist */,
 				4271A6A620F88BE300C4C216 /* Pushup Hero copy-Info.plist */,
@@ -114,6 +113,8 @@
 				4213EBA020429638009B2C01 /* LaunchScreen.storyboard */,
 				4213EBA320429638009B2C01 /* Info.plist */,
 				424E3A6F205101C100020A8E /* CustomCell.swift */,
+				429F90922537395900703051 /* DataObject.swift */,
+				429F909925373B1F00703051 /* Sounds.swift */,
 			);
 			path = buttons;
 			sourceTree = "<group>";
@@ -131,19 +132,6 @@
 				424E62BE2060D0890094FABA /* charging.wav */,
 			);
 			path = "sound effects";
-			sourceTree = "<group>";
-		};
-		429EC17520F5D362000E7075 /* Pushup Hero */ = {
-			isa = PBXGroup;
-			children = (
-				429EC17620F5D362000E7075 /* AppDelegate.swift */,
-				429EC17820F5D362000E7075 /* ViewController.swift */,
-				429EC17A20F5D362000E7075 /* Main.storyboard */,
-				429EC17D20F5D363000E7075 /* Assets.xcassets */,
-				429EC17F20F5D363000E7075 /* LaunchScreen.storyboard */,
-				429EC18220F5D363000E7075 /* Info.plist */,
-			);
-			path = "Pushup Hero";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -265,6 +253,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				4271A69220F88BE300C4C216 /* ViewController.swift in Sources */,
+				429F90942537395900703051 /* DataObject.swift in Sources */,
+				429F909B25373B1F00703051 /* Sounds.swift in Sources */,
 				4271A69320F88BE300C4C216 /* CustomCell.swift in Sources */,
 				4271A69420F88BE300C4C216 /* AppDelegate.swift in Sources */,
 			);
@@ -275,6 +265,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				429EC18820F5D3BB000E7075 /* ViewController.swift in Sources */,
+				429F90932537395900703051 /* DataObject.swift in Sources */,
+				429F909A25373B1F00703051 /* Sounds.swift in Sources */,
 				429EC18920F5D3BB000E7075 /* CustomCell.swift in Sources */,
 				429EC18A20F5D3BB000E7075 /* AppDelegate.swift in Sources */,
 			);
@@ -295,22 +287,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				4213EBA120429638009B2C01 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-		429EC17A20F5D362000E7075 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				429EC17B20F5D362000E7075 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		429EC17F20F5D363000E7075 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				429EC18020F5D363000E7075 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";

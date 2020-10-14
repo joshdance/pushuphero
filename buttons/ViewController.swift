@@ -36,15 +36,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     @IBOutlet weak var monthlyBox: UIView!
     @IBOutlet weak var yearlyBox: UIView!
     
-    
     var audioPlayer = AVAudioPlayer()
-    
-    struct Sounds {
-        static let startupSound: String = "oblivion.wav"
-        static let downSound: String = "shorttap.aif"
-        static let upSound: String = "hollowtap.aif"
-        static let saveSound: String = "upward.wav"
-    }
     
     var holdTimer: Timer!
     
@@ -64,9 +56,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         super.viewDidLoad()
         
         loadData()
-        
         playSound(sound: Sounds.startupSound)
-        middleTextField.text = "Enter text here. Then save."
         
         pushupTableView.dataSource = self
         pushupTableView.delegate = self
@@ -82,6 +72,18 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         downLongPressRecognizer.delegate = self
         self.downButton.addGestureRecognizer(downLongPressRecognizer)
         
+        setUpViews()
+        
+        calculatePushupsToday()
+        calcPushupsThisWeek()
+        calcPushupsThisMonth()
+        calcPushupsThisYear()
+    }
+    
+    func setUpViews() {
+        
+        middleTextField.text = "Enter text here. Then save."
+
         upButton.layer.borderWidth = 2.0
         upButton.backgroundColor = popColor
         upButton.layer.borderColor = borderColor.cgColor
@@ -112,8 +114,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         yearlyBox.layer.borderWidth = 2.0
         yearlyBox.layer.borderColor = borderColor.cgColor
         yearlyBox.layer.cornerRadius = 10.0
-        
-        calculatePushupsToday()
     }
     
     func playSound(sound: String){
@@ -173,9 +173,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func calculatePushupsToday() {
         //get todays date
-        calcPushupsThisWeek()
-        calcPushupsThisMonth()
-        calcPushupsThisYear()
         let calendar = Calendar.current
         var todaysPushupNumber = 0
         for workout in myArray {
@@ -327,6 +324,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         pushupNumber = 0
         numberLabel.text = String(pushupNumber)
         calculatePushupsToday()
+        calcPushupsThisWeek()
+        calcPushupsThisMonth()
+        calcPushupsThisYear()
         middleTextField.endEditing(true)
         playSound(sound: Sounds.saveSound)
     }
@@ -361,11 +361,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             print("The file DOES NOT exist! Mournful trumpets sound...")
         }
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let workout = myArray[indexPath.row]
@@ -389,57 +384,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func textFieldDidBeginEditing(_ middleTextField: UITextField) {
         middleTextField.text = ""
     }
-}
-
-class DataObject: NSObject, NSCoding {
     
-    //var savedString: String
-    
-    var listOfStrings: [String] = ["nothing saved yet"]
-    var dateOfSave = Date()
-    var numberOfPushups = 0
-    var dateOfWorkout = Date()
-    
-    struct Key {
-        static let myStringKey = "myStringKey"
-        static let myDateKey = "myDateKey"
-        static let myNumberKey = "myNumberKey"
-        static let myDateWorkoutKey = "myDateWorkoutKey"
-    }
-    
-    //encode objects
-    func encode(with aCoder: NSCoder) {
-        aCoder.encode(listOfStrings, forKey: Key.myStringKey)
-        aCoder.encode(dateOfSave, forKey: Key.myDateKey)
-        aCoder.encode(dateOfWorkout, forKey: Key.myDateWorkoutKey)
-        aCoder.encode(numberOfPushups, forKey: Key.myNumberKey)
-    }
-    
-    //decode objects
-    required convenience init?(coder aDecoder: NSCoder) {
-        let listOfStrings =   aDecoder.decodeObject(forKey: Key.myStringKey) as! Array<String>
-        let dateOfSave =      aDecoder.decodeObject(forKey: Key.myDateKey) as! Date
-        
-        var dateOfWorkout = Date()
-        //if key exists !=
-        if aDecoder.decodeObject(forKey: Key.myDateWorkoutKey) != nil {
-            dateOfWorkout =   aDecoder.decodeObject(forKey: Key.myDateWorkoutKey) as! Date
-        } else {
-            //if the key == nil
-            dateOfWorkout = dateOfSave
-        }
-        
-        let numberOfPushups = aDecoder.decodeInteger(forKey: Key.myNumberKey) as Int
-        
-        self.init(argumentListOfStrings: listOfStrings, argumentDateOfSave: dateOfSave, argumentDateOfWorkout: dateOfWorkout, argumentNumberOfPushups: numberOfPushups)
-    }
-    
-    init(argumentListOfStrings: [String], argumentDateOfSave: Date, argumentDateOfWorkout: Date, argumentNumberOfPushups: Int) {
-        self.listOfStrings = argumentListOfStrings
-        self.dateOfSave = argumentDateOfSave
-        self.dateOfWorkout = argumentDateOfWorkout
-        self.numberOfPushups = argumentNumberOfPushups
-        super.init()
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
     }
 }
-
