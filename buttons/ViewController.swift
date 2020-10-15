@@ -29,8 +29,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     @IBOutlet weak var pushupsThisYearLabel: UILabel!
     @IBOutlet weak var pushupsThisMonthLabel: UILabel!
     @IBOutlet weak var saveButton: UIButton!
-    
-    
     @IBOutlet weak var dailyBox: UIView!
     @IBOutlet weak var weeklyBox: UIView!
     @IBOutlet weak var monthlyBox: UIView!
@@ -74,14 +72,14 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         setUpViews()
         
-        calculatePushupsToday()
-        calcPushupsThisWeek()
-        calcPushupsThisMonth()
-        calcPushupsThisYear()
+        calculatePushupCounts()
+//        calculatePushupsToday()
+//        calcPushupsThisWeek()
+//        calcPushupsThisMonth()
+//        calcPushupsThisYear()
     }
     
     func setUpViews() {
-        
         middleTextField.text = "Enter text here. Then save."
 
         upButton.layer.borderWidth = 2.0
@@ -171,10 +169,19 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         playSound(sound: Sounds.downSound)
     }
     
-    func calculatePushupsToday() {
-        //get todays date
+    func calculatePushupCounts() {
         let calendar = Calendar.current
+        let today =  Date()
+        
+        let weekComponents = calendar.dateComponents([.weekOfYear], from: today)
+        let monthComponents = calendar.dateComponents([.month], from: today)
+        let yearComponents = calendar.dateComponents([.year], from: today)
+        
         var todaysPushupNumber = 0
+        var thisWeeksPushups = 0
+        var thisMonthsPushups = 0
+        var thisYearsPushups = 0
+
         for workout in myArray {
             //see if any of the entries = today
             if calendar.isDateInToday(workout.dateOfWorkout) == true
@@ -182,72 +189,113 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                 //add them up.
                 todaysPushupNumber = todaysPushupNumber + workout.numberOfPushups
             }
-        } //end for workout
-        let todaysPushupLabelText : String = String(todaysPushupNumber)
-        pushupsTodayLabel.text = todaysPushupLabelText
-    } //end calculatePushupsToday
-    
-    func calcPushupsThisWeek(){
-        let calendar = Calendar.current
-        var thisWeeksPushups = 0
-        let today =  Date()
-        let todayComponents = calendar.dateComponents([.weekOfYear], from: today)
-        
-        for workout in myArray {
-            let workoutComponents = calendar.dateComponents([.weekOfYear], from: workout.dateOfWorkout)
-            if todayComponents.weekOfYear == workoutComponents.weekOfYear
+            
+            var workoutComponents = calendar.dateComponents([.weekOfYear], from: workout.dateOfWorkout)
+            if weekComponents.weekOfYear == workoutComponents.weekOfYear
             {
                 thisWeeksPushups = thisWeeksPushups + workout.numberOfPushups
             }
-        } //end for workout
-        
-        let weeksPushupLabelText : String = String(thisWeeksPushups)
-        pushupsThisWeekLabel.text = weeksPushupLabelText
-    }
-    
-    func calcPushupsThisMonth(){
-        let calendar = Calendar.current
-        var thisMonthsPushups = 0
-        let today =  Date()
-        let todayComponents = calendar.dateComponents([.month], from: today)
-        
-        for workout in myArray {
-            //see if any of the entries = today
             
-            let workoutComponents = calendar.dateComponents([.month], from: workout.dateOfWorkout)
+            workoutComponents = calendar.dateComponents([.month], from: workout.dateOfWorkout)
             
-            if todayComponents.month == workoutComponents.month
+            if monthComponents.month == workoutComponents.month
             {
                 //add them up.
                 thisMonthsPushups = thisMonthsPushups + workout.numberOfPushups
             }
-        } //end for workout
-        
-        let monthPushupLabelText : String = String(thisMonthsPushups)
-        pushupsThisMonthLabel.text = monthPushupLabelText
-    }
-    
-    func calcPushupsThisYear(){
-        let calendar = Calendar.current
-        var thisYearsPushups = 0
-        let today =  Date()
-        let todayComponents = calendar.dateComponents([.year], from: today)
-        
-        for workout in myArray {
-            //see if any of the entries = today
             
-            let workoutComponents = calendar.dateComponents([.year], from: workout.dateOfWorkout)
+            workoutComponents = calendar.dateComponents([.year], from: workout.dateOfWorkout)
             
-            if todayComponents.year == workoutComponents.year
+            if yearComponents.year == workoutComponents.year
             {
                 //add them up.
                 thisYearsPushups = thisYearsPushups + workout.numberOfPushups
             }
         } //end for workout
         
-        let yearsPushupLabelText : String = String(thisYearsPushups)
-        pushupsThisYearLabel.text = yearsPushupLabelText
+        pushupsTodayLabel.text = String(todaysPushupNumber)
+        pushupsThisWeekLabel.text = String(thisWeeksPushups)
+        pushupsThisMonthLabel.text = String(thisMonthsPushups)
+        pushupsThisYearLabel.text = String(thisYearsPushups)
+        
     }
+//    func calculatePushupsToday() {
+//        //get todays date
+//        let calendar = Calendar.current
+//        var todaysPushupNumber = 0
+//        for workout in myArray {
+//            //see if any of the entries = today
+//            if calendar.isDateInToday(workout.dateOfWorkout) == true
+//            {
+//                //add them up.
+//                todaysPushupNumber = todaysPushupNumber + workout.numberOfPushups
+//            }
+//        } //end for workout
+//        let todaysPushupLabelText : String = String(todaysPushupNumber)
+//        pushupsTodayLabel.text = todaysPushupLabelText
+//    } //end calculatePushupsToday
+    
+//    func calcPushupsThisWeek(){
+//        let calendar = Calendar.current
+//        var thisWeeksPushups = 0
+//        let today =  Date()
+//        let todayComponents = calendar.dateComponents([.weekOfYear], from: today)
+//
+//        for workout in myArray {
+//            let workoutComponents = calendar.dateComponents([.weekOfYear], from: workout.dateOfWorkout)
+//            if todayComponents.weekOfYear == workoutComponents.weekOfYear
+//            {
+//                thisWeeksPushups = thisWeeksPushups + workout.numberOfPushups
+//            }
+//        } //end for workout
+//
+//        let weeksPushupLabelText : String = String(thisWeeksPushups)
+//        pushupsThisWeekLabel.text = weeksPushupLabelText
+//    }
+    
+//    func calcPushupsThisMonth(){
+//        let calendar = Calendar.current
+//        var thisMonthsPushups = 0
+//        let today =  Date()
+//        let todayComponents = calendar.dateComponents([.month], from: today)
+//
+//        for workout in myArray {
+//            //see if any of the entries = today
+//
+//            let workoutComponents = calendar.dateComponents([.month], from: workout.dateOfWorkout)
+//
+//            if todayComponents.month == workoutComponents.month
+//            {
+//                //add them up.
+//                thisMonthsPushups = thisMonthsPushups + workout.numberOfPushups
+//            }
+//        } //end for workout
+//
+//        let monthPushupLabelText : String = String(thisMonthsPushups)
+//        pushupsThisMonthLabel.text = monthPushupLabelText
+//    }
+    
+//    func calcPushupsThisYear(){
+//        let calendar = Calendar.current
+//        var thisYearsPushups = 0
+//        let today =  Date()
+//        let todayComponents = calendar.dateComponents([.year], from: today)
+//
+//        for workout in myArray {
+//            //see if any of the entries = today
+//
+//            let workoutComponents = calendar.dateComponents([.year], from: workout.dateOfWorkout)
+//
+//            if todayComponents.year == workoutComponents.year
+//            {
+//                //add them up.
+//                thisYearsPushups = thisYearsPushups + workout.numberOfPushups
+//            }
+//        } //end for workout
+//
+//        let yearsPushupLabelText : String = String(thisYearsPushups)
+//        pushupsThisYearLabel.text = yearsPushupLabelText
+//    }
     
     @IBAction func tappedSaveButton(_ sender: Any) {
         
@@ -323,10 +371,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         pushupTableView.reloadData()
         pushupNumber = 0
         numberLabel.text = String(pushupNumber)
-        calculatePushupsToday()
-        calcPushupsThisWeek()
-        calcPushupsThisMonth()
-        calcPushupsThisYear()
+        //calculatePushupsToday()
+        calculatePushupCounts()
+//        calcPushupsThisWeek()
+//        calcPushupsThisMonth()
+//        calcPushupsThisYear()
         middleTextField.endEditing(true)
         playSound(sound: Sounds.saveSound)
     }
