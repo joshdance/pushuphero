@@ -1,9 +1,11 @@
 Clean Up
-1. unify the daily, weekly, monthly, yearly calculations
+1. unify the daily, weekly, monthly, yearly calculations - ✅
 2. Refactor the data object to be more accurate
 3. add true placeholder text
 4. Clean up the UI on iPhone X S screen size
 5. Implment CoreData
+6. research setActive more - https://thedon.me/2016/03/15/avaudiosession-and-ducking/
+
 
 Features
 1. Add an all time count

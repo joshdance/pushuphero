@@ -73,10 +73,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         setUpViews()
         
         calculatePushupCounts()
-//        calculatePushupsToday()
-//        calcPushupsThisWeek()
-//        calcPushupsThisMonth()
-//        calcPushupsThisYear()
+
     }
     
     func setUpViews() {
@@ -124,7 +121,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
             audioPlayer.play()
-            //TODO research setActive more - https://thedon.me/2016/03/15/avaudiosession-and-ducking/
         } catch {
             print("couldn't load the file")
         }
@@ -151,7 +147,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
 
     //func changeChunk - give it the + or -?
-    
+
     @objc func addChunkPushup() {
         pushupNumber = pushupNumber + 10
         numberLabel.text = String(pushupNumber)
@@ -219,86 +215,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         pushupsThisYearLabel.text = String(thisYearsPushups)
         
     }
-//    func calculatePushupsToday() {
-//        //get todays date
-//        let calendar = Calendar.current
-//        var todaysPushupNumber = 0
-//        for workout in myArray {
-//            //see if any of the entries = today
-//            if calendar.isDateInToday(workout.dateOfWorkout) == true
-//            {
-//                //add them up.
-//                todaysPushupNumber = todaysPushupNumber + workout.numberOfPushups
-//            }
-//        } //end for workout
-//        let todaysPushupLabelText : String = String(todaysPushupNumber)
-//        pushupsTodayLabel.text = todaysPushupLabelText
-//    } //end calculatePushupsToday
-    
-//    func calcPushupsThisWeek(){
-//        let calendar = Calendar.current
-//        var thisWeeksPushups = 0
-//        let today =  Date()
-//        let todayComponents = calendar.dateComponents([.weekOfYear], from: today)
-//
-//        for workout in myArray {
-//            let workoutComponents = calendar.dateComponents([.weekOfYear], from: workout.dateOfWorkout)
-//            if todayComponents.weekOfYear == workoutComponents.weekOfYear
-//            {
-//                thisWeeksPushups = thisWeeksPushups + workout.numberOfPushups
-//            }
-//        } //end for workout
-//
-//        let weeksPushupLabelText : String = String(thisWeeksPushups)
-//        pushupsThisWeekLabel.text = weeksPushupLabelText
-//    }
-    
-//    func calcPushupsThisMonth(){
-//        let calendar = Calendar.current
-//        var thisMonthsPushups = 0
-//        let today =  Date()
-//        let todayComponents = calendar.dateComponents([.month], from: today)
-//
-//        for workout in myArray {
-//            //see if any of the entries = today
-//
-//            let workoutComponents = calendar.dateComponents([.month], from: workout.dateOfWorkout)
-//
-//            if todayComponents.month == workoutComponents.month
-//            {
-//                //add them up.
-//                thisMonthsPushups = thisMonthsPushups + workout.numberOfPushups
-//            }
-//        } //end for workout
-//
-//        let monthPushupLabelText : String = String(thisMonthsPushups)
-//        pushupsThisMonthLabel.text = monthPushupLabelText
-//    }
-    
-//    func calcPushupsThisYear(){
-//        let calendar = Calendar.current
-//        var thisYearsPushups = 0
-//        let today =  Date()
-//        let todayComponents = calendar.dateComponents([.year], from: today)
-//
-//        for workout in myArray {
-//            //see if any of the entries = today
-//
-//            let workoutComponents = calendar.dateComponents([.year], from: workout.dateOfWorkout)
-//
-//            if todayComponents.year == workoutComponents.year
-//            {
-//                //add them up.
-//                thisYearsPushups = thisYearsPushups + workout.numberOfPushups
-//            }
-//        } //end for workout
-//
-//        let yearsPushupLabelText : String = String(thisYearsPushups)
-//        pushupsThisYearLabel.text = yearsPushupLabelText
-//    }
     
     @IBAction func tappedSaveButton(_ sender: Any) {
-        
         //add the saved Text to the array.
         let newDataObject = DataObject(argumentListOfStrings: [], argumentDateOfSave: Date(), argumentDateOfWorkout: Date(),  argumentNumberOfPushups: Int())
         
@@ -371,11 +289,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         pushupTableView.reloadData()
         pushupNumber = 0
         numberLabel.text = String(pushupNumber)
-        //calculatePushupsToday()
         calculatePushupCounts()
-//        calcPushupsThisWeek()
-//        calcPushupsThisMonth()
-//        calcPushupsThisYear()
+
         middleTextField.endEditing(true)
         playSound(sound: Sounds.saveSound)
     }
