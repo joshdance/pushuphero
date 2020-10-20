@@ -77,7 +77,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func setUpViews() {
-        middleTextField.text = "Enter text here. Then save."
+        middleTextField.placeholder = "Enter text here. Then save."
 
         upButton.layer.borderWidth = 2.0
         upButton.backgroundColor = popColor
@@ -220,12 +220,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         //add the saved Text to the array.
         let newDataObject = DataObject(argumentListOfStrings: [], argumentDateOfSave: Date(), argumentDateOfWorkout: Date(),  argumentNumberOfPushups: Int())
         
-        if middleTextField.text != "Enter text here. Then save."
+        if middleTextField.text != ""
         {
             savedText = middleTextField.text!
         } else {
             savedText = ""
         }
+        
         newDataObject.listOfStrings.append(savedText)
         newDataObject.numberOfPushups = pushupNumber
         newDataObject.dateOfSave = Date()
@@ -291,6 +292,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         numberLabel.text = String(pushupNumber)
         calculatePushupCounts()
 
+        middleTextField.text = ""
         middleTextField.endEditing(true)
         playSound(sound: Sounds.saveSound)
     }
@@ -345,9 +347,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         return myArray.count
     }
     
-    func textFieldDidBeginEditing(_ middleTextField: UITextField) {
-        middleTextField.text = ""
-    }
+//    func textFieldDidBeginEditing(_ middleTextField: UITextField) {
+//        middleTextField.text = ""
+//    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

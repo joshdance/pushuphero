@@ -1,10 +1,11 @@
 Clean Up
 1. unify the daily, weekly, monthly, yearly calculations - ✅
 2. Refactor the data object to be more accurate
-3. add true placeholder text
+3. add true placeholder text - ✅
 4. Clean up the UI on iPhone X S screen size
 5. Implment CoreData
 6. research setActive more - https://thedon.me/2016/03/15/avaudiosession-and-ducking/
+7. tap outside keyboard to dismiss
 
 
 Features
@@ -13,6 +14,7 @@ Features
 3. Export?
 4. Add ability to mute sound effects?
 5. Let you delete sets. (accidental save)
+5.5 slide to delete 
 6. Ask if you want to save a set with 0
 
 Bugs
