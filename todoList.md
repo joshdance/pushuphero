@@ -5,7 +5,7 @@ Clean Up
 4. Clean up the UI on iPhone X S screen size
 5. Implment CoreData
 6. research setActive more - https://thedon.me/2016/03/15/avaudiosession-and-ducking/
-7. tap outside keyboard to dismiss
+7. tap outside keyboard to dismiss ✅
 
 
 Features

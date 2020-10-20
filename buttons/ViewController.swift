@@ -39,7 +39,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     var holdTimer: Timer!
     
     var filePath: String {
-        //manager lets you examine contents of a files and folders i your app.
+        //manager lets you examine contents of a files and folders in your app.
         let manager = FileManager.default
         
         //returns an array of urls from our documentDirectory and we take the first
@@ -55,6 +55,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         loadData()
         playSound(sound: Sounds.startupSound)
+        
+        //registerTapToCloseKeyboard
+        let tapGesture = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing(_:)))
+        view.addGestureRecognizer(tapGesture)
         
         pushupTableView.dataSource = self
         pushupTableView.delegate = self
