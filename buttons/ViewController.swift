@@ -181,9 +181,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         var thisWeeksPushups = 0
         var thisMonthsPushups = 0
         var thisYearsPushups = 0
+        var pushupsAllTime = 0
 
         for workout in myArray {
             //see if any of the entries = today
+            pushupsAllTime = pushupsAllTime + workout.numberOfPushups
+            
             if calendar.isDateInToday(workout.dateOfWorkout) == true
             {
                 //add them up.
@@ -212,6 +215,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                 thisYearsPushups = thisYearsPushups + workout.numberOfPushups
             }
         } //end for workout
+        
+        print(pushupsAllTime)
         
         pushupsTodayLabel.text = String(todaysPushupNumber)
         pushupsThisWeekLabel.text = String(thisWeeksPushups)
