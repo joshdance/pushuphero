@@ -295,7 +295,21 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func save(newDataObject: DataObject) {
         myArray.insert(newDataObject, at: 0)
-        NSKeyedArchiver.archiveRootObject(myArray, toFile: filePath)
+
+        // Use modern NSKeyedArchiver with secure coding
+        do {
+            let data = try NSKeyedArchiver.archivedData(withRootObject: myArray, requiringSecureCoding: true)
+            try data.write(to: URL(fileURLWithPath: filePath))
+            print("Data saved successfully. Total workouts: \(myArray.count)")
+        } catch {
+            print("ERROR: Failed to save data: \(error.localizedDescription)")
+            // Alert user of save failure
+            let alert = UIAlertController(title: "Save Error", message: "Failed to save workout data. Please try again.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(alert, animated: true)
+            return
+        }
+
         pushupTableView.reloadData()
         pushupNumber = 0
         numberLabel.text = String(pushupNumber)
@@ -322,19 +336,67 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func loadData() {
         let manager = FileManager.default
-        
-        if manager.fileExists(atPath: filePath) {
-            print("The file exists!")
-            
-            //if we can get data back, get our data.
-            let ourData = NSKeyedUnarchiver.unarchiveObject(withFile: filePath) as! Array<DataObject>
-            myArray = ourData
-            
-            print("count of myArray = ", myArray.count)
-            
-        } else {
-            print("The file DOES NOT exist! Mournful trumpets sound...")
+
+        guard manager.fileExists(atPath: filePath) else {
+            print("No existing data file found. Starting fresh.")
+            myArray = []
+            return
         }
+
+        print("Data file exists. Loading...")
+
+        do {
+            // Read the data from file
+            let data = try Data(contentsOf: URL(fileURLWithPath: filePath))
+
+            // Try modern NSSecureCoding first
+            do {
+                let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
+                unarchiver.requiresSecureCoding = false // Allow fallback to old format
+
+                if let loadedArray = try unarchiver.decodeTopLevelObject(of: [NSArray.self, DataObject.self], forKey: NSKeyedArchiveRootObjectKey) as? [DataObject] {
+                    myArray = loadedArray
+                    print("Successfully loaded \(myArray.count) workouts using modern format")
+
+                    // Automatically migrate to new format on next save
+                    // This happens automatically since save() uses the new format
+                } else {
+                    print("ERROR: Could not decode data as array of DataObject")
+                    myArray = []
+                }
+
+                unarchiver.finishDecoding()
+
+            } catch {
+                // Fallback to deprecated method for very old data
+                print("Modern decoding failed, attempting legacy format: \(error.localizedDescription)")
+
+                if let legacyArray = NSKeyedUnarchiver.unarchiveObject(with: data) as? [DataObject] {
+                    myArray = legacyArray
+                    print("Successfully loaded \(myArray.count) workouts using legacy format")
+                    print("Data will be automatically migrated to new format on next save")
+                } else {
+                    print("ERROR: Legacy decoding also failed")
+                    myArray = []
+                    showDataLoadError()
+                }
+            }
+
+        } catch {
+            print("ERROR: Failed to read data file: \(error.localizedDescription)")
+            myArray = []
+            showDataLoadError()
+        }
+    }
+
+    func showDataLoadError() {
+        let alert = UIAlertController(
+            title: "Data Load Error",
+            message: "There was a problem loading your workout history. Your data file may be corrupted. Contact support if this persists.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        self.present(alert, animated: true)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
