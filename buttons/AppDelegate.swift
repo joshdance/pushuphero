@@ -15,8 +15,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Perform data migration and validation on app launch
+        let migrationSuccess = DataMigrationManager.shared.performMigrationIfNeeded()
+
+        if !migrationSuccess {
+            // Data recovery failed - show alert to user
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.showDataRecoveryAlert()
+            }
+        }
+
         return true
+    }
+
+    private func showDataRecoveryAlert() {
+        guard let rootViewController = window?.rootViewController else { return }
+
+        let alert = UIAlertController(
+            title: "Data Recovery Issue",
+            message: "We encountered an issue loading your workout data. Your data may have been recovered from a backup. Please verify your workout history.",
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+
+        rootViewController.present(alert, animated: true, completion: nil)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -25,8 +48,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        // Create automatic backup when app goes to background
+        _ = DataMigrationManager.shared.createBackup(reason: "background")
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
