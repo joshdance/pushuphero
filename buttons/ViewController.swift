@@ -316,9 +316,14 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
         // If the existing history could not be read at launch, writing now would
         // replace a file we never understood with a single new workout. Preserve
-        // the original bytes first so the history is still recoverable.
+        // the original bytes first — and if that fails, refuse to save at all.
+        // Blocking one workout is recoverable; overwriting unread history is not.
         if loadFailed {
-            DataMigrationManager.shared.quarantineUnreadableDataFile()
+            guard DataMigrationManager.shared.quarantineUnreadableDataFile() else {
+                presentAlert(title: "Cannot Save Yet",
+                             message: "Pushup Hero could not read your existing workout file, and could not set a copy of it aside. Saving now would overwrite it, so this workout has not been saved. Freeing up storage space and reopening the app should resolve this.")
+                return
+            }
             loadFailed = false
         }
 

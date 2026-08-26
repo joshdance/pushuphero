@@ -167,5 +167,109 @@ let full = try! DataArchive.encode(makeWorkouts([1, 2, 3, 4, 5]))
 try! full.prefix(full.count / 2).write(to: DataArchive.fileURL!)
 check("truncated file rejected", !mgr.validateDataFile().isValid)
 
+// ---------------------------------------------------------------
+print("\n[13] Quarantine fails while a GOOD backup exists -> must not overwrite the original")
+resetWorld()
+// A valid backup is present and readable, so recovery has something to restore.
+// The backup folder is then made read-only: existing files can still be listed
+// and read, but nothing new can be written into it, so quarantine must fail.
+// This is the case that matters — without the guard, recovery would happily
+// write the backup over the unreadable original and destroy it.
+try! FileManager.default.createDirectory(at: DataArchive.backupFolderURL!, withIntermediateDirectories: true)
+try! DataArchive.write(makeWorkouts([11, 22, 33]),
+                       to: DataArchive.backupFolderURL!.appendingPathComponent("Data_pre_launch_2025-01-01T00-00-00-000"))
+let unreadable = Data([0xDE, 0xAD, 0xBE, 0xEF, 0x01, 0x02])
+try! unreadable.write(to: DataArchive.fileURL!)
+try! FileManager.default.setAttributes([.posixPermissions: 0o555], ofItemAtPath: DataArchive.backupFolderURL!.path)
+
+// Confirm the folder really is unwritable, otherwise the test proves nothing.
+let writeBlocked = !FileManager.default.createFile(
+    atPath: DataArchive.backupFolderURL!.appendingPathComponent("probe").path, contents: Data())
+check("precondition: backup folder is unwritable", writeBlocked)
+check("precondition: the good backup is still readable", mgr.listBackups().count == 1,
+      "\(mgr.listBackups().count) backups visible")
+
+outcome = mgr.performMigrationIfNeeded()
+if case .failed = outcome {
+    check("refused to recover when it could not preserve the original", true)
+} else {
+    check("refused to recover when it could not preserve the original", false, "got \(outcome)")
+}
+let survived = (try? Data(contentsOf: DataArchive.fileURL!)) ?? Data()
+check("unreadable original left byte-for-byte intact", survived == unreadable,
+      "\(survived.count) bytes on disk, expected \(unreadable.count)")
+check("quarantine correctly reported failure", mgr.quarantineUnreadableDataFile() == false)
+try! FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: DataArchive.backupFolderURL!.path)
+
+// ---------------------------------------------------------------
+print("\n[14] Quarantine falls back to a verified copy when the move fails")
+resetWorld()
+try! FileManager.default.createDirectory(at: DataArchive.backupFolderURL!, withIntermediateDirectories: true)
+let bad = Data([0x00, 0xFF, 0x00, 0xFF])
+try! bad.write(to: DataArchive.fileURL!)
+check("quarantine succeeds normally", mgr.quarantineUnreadableDataFile() == true)
+let quarantined = (try! FileManager.default.contentsOfDirectory(atPath: DataArchive.backupFolderURL!.path))
+    .filter { $0.hasPrefix("Quarantine_") }
+check("exactly one quarantine file written", quarantined.count == 1, "\(quarantined)")
+if let first = quarantined.first {
+    let saved = try! Data(contentsOf: DataArchive.backupFolderURL!.appendingPathComponent(first))
+    check("quarantined bytes match the original exactly", saved == bad)
+}
+
+// ---------------------------------------------------------------
+print("\n[15] A drop in workout count must be reported, remembered, and protected")
+resetWorld()
+try! DataArchive.write(makeWorkouts([1, 2, 3, 4, 5, 6, 7, 8]), to: DataArchive.fileURL!)
+_ = mgr.performMigrationIfNeeded()                       // establishes 8 as the peak
+// Simulate history being eaten: same file, fewer records.
+try! DataArchive.write(makeWorkouts([1, 2, 3]), to: DataArchive.fileURL!)
+
+outcome = mgr.performMigrationIfNeeded()
+if case .historyShrank(let now, let before) = outcome {
+    check("loss detected and surfaced", true, "\(before) -> \(now)")
+} else {
+    check("loss detected and surfaced", false, "got \(outcome)")
+}
+check("outcome demands user attention", outcome.needsUserAttention)
+check("evidence snapshot kept", mgr.listBackups().contains { $0.reason == "history_shrank" })
+
+// The original bug: the lower count was written back, so the next launch
+// compared 3 against 3 and saw nothing wrong.
+let afterRelaunch = mgr.performMigrationIfNeeded()
+check("shortfall still known on the next launch (not erased by the lower count)",
+      mgr.debugReport(inMemoryCount: 3, loadFailed: false).contains("Most workouts ever seen: 8"))
+if case .ok = afterRelaunch {
+    check("does not nag the user a second time for the same drop", true)
+} else {
+    check("does not nag the user a second time for the same drop", false, "got \(afterRelaunch)")
+}
+
+// A further drop is a new event and must be reported again.
+try! DataArchive.write(makeWorkouts([1]), to: DataArchive.fileURL!)
+if case .historyShrank = mgr.performMigrationIfNeeded() {
+    check("a further drop is reported as a new event", true)
+} else {
+    check("a further drop is reported as a new event", false)
+}
+
+// ---------------------------------------------------------------
+print("\n[16] While history is short, backups must not be rotated away")
+resetWorld()
+try! DataArchive.write(makeWorkouts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]), to: DataArchive.fileURL!)
+_ = mgr.performMigrationIfNeeded()
+// Seed more routine backups than the retention limit.
+for i in 1...8 {
+    try! DataArchive.write(makeWorkouts(Array(1...10)),
+        to: DataArchive.backupFolderURL!.appendingPathComponent("Data_pre_launch_2025-0\(i)-01T00-00-00-000"))
+}
+let beforeCount = mgr.listBackups().count
+try! DataArchive.write(makeWorkouts([1, 2]), to: DataArchive.fileURL!)   // history eaten
+_ = mgr.performMigrationIfNeeded()
+let afterCount = mgr.listBackups().count
+check("no backups deleted while workouts are missing", afterCount >= beforeCount,
+      "\(beforeCount) before, \(afterCount) after")
+check("a backup holding the full history survived",
+      mgr.listBackups().contains { (try? DataArchive.read(from: $0.url))?.count == 10 })
+
 print("\n================ \(failures == 0 ? "ALL SCENARIOS PASSED" : "\(failures) FAILURE(S)") ================")
 exit(failures == 0 ? 0 : 1)

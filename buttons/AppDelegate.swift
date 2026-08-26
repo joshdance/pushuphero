@@ -35,6 +35,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 "Pushup Hero could not read your workout file, so it restored a backup from \(AppDelegate.describe(source)). \(count) workout\(count == 1 ? "" : "s") were recovered. Any workouts saved after that backup may be missing, and the original file has been kept."
             )
 
+        case .historyShrank(let count, let previous):
+            print("History shrank from \(previous) to \(count)")
+            AppDelegate.pendingLaunchAlert = (
+                "Some Workouts Are Missing",
+                "Pushup Hero previously recorded \(previous) workouts but can now only find \(count). Nothing has been deleted and older backups are being kept, so please get in touch before this gets overwritten — tap the \"Pushup Hero\" title for diagnostics."
+            )
+
         case .failed(let reason):
             print("Data recovery failed: \(reason)")
             AppDelegate.pendingLaunchAlert = (
