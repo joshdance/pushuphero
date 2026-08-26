@@ -37,18 +37,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     var audioPlayer = AVAudioPlayer()
     
     var holdTimer: Timer!
-    
-    var filePath: String {
-        //manager lets you examine contents of a files and folders in your app.
-        let manager = FileManager.default
-        
-        //returns an array of urls from our documentDirectory and we take the first
-        let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first
-        //print("this is the url path in the document directory \(String(describing: url))")
-        
-        //creates a new path component and creates a new file called "Data" where we store our data array
-        return(url!.appendingPathComponent("Data").path)
-    }
+
+    /// True when the on-disk history existed but could not be decoded. While set,
+    /// the next save quarantines the original file instead of overwriting it.
+    var loadFailed = false
+
+    /// Alert queued from viewDidLoad, shown once the view is on screen.
+    var pendingAlert: (title: String, message: String)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,6 +73,18 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         calculatePushupCounts()
 
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        // Surface anything that went wrong during load or launch-time migration
+        // now that there is a window to present into.
+        if let launchAlert = AppDelegate.pendingLaunchAlert {
+            AppDelegate.pendingLaunchAlert = nil
+            pendingAlert = launchAlert
+        }
+        presentPendingAlertIfNeeded()
     }
     
     func setUpViews() {
@@ -294,21 +301,37 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func save(newDataObject: DataObject) {
-        myArray.insert(newDataObject, at: 0)
-
-        // Use modern NSKeyedArchiver with secure coding
-        do {
-            let data = try NSKeyedArchiver.archivedData(withRootObject: myArray, requiringSecureCoding: true)
-            try data.write(to: URL(fileURLWithPath: filePath))
-            print("Data saved successfully. Total workouts: \(myArray.count)")
-        } catch {
-            print("ERROR: Failed to save data: \(error.localizedDescription)")
-            // Alert user of save failure
-            let alert = UIAlertController(title: "Save Error", message: "Failed to save workout data. Please try again.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            self.present(alert, animated: true)
+        guard let dataURL = DataArchive.fileURL else {
+            presentAlert(title: "Save Error",
+                         message: "Pushup Hero could not find its storage folder, so this workout was not saved.")
             return
         }
+
+        // If the existing history could not be read at launch, writing now would
+        // replace a file we never understood with a single new workout. Preserve
+        // the original bytes first so the history is still recoverable.
+        if loadFailed {
+            DataMigrationManager.shared.quarantineUnreadableDataFile()
+            loadFailed = false
+        }
+
+        // Build the candidate list without touching myArray. Only a write that
+        // actually lands is allowed to change what the app thinks it has, so a
+        // failed save followed by a retry cannot record the workout twice.
+        var candidate = myArray
+        candidate.insert(newDataObject, at: 0)
+
+        do {
+            try DataArchive.write(candidate, to: dataURL)
+        } catch {
+            print("ERROR: Failed to save data: \(error.localizedDescription)")
+            presentAlert(title: "Save Error",
+                         message: "Failed to save this workout, so it has not been recorded. Your previous history is untouched. Please try again.")
+            return
+        }
+
+        myArray = candidate
+        print("Data saved successfully. Total workouts: \(myArray.count)")
 
         pushupTableView.reloadData()
         pushupNumber = 0
@@ -335,70 +358,56 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func loadData() {
-        let manager = FileManager.default
+        guard let dataURL = DataArchive.fileURL else {
+            print("ERROR: documents directory unavailable")
+            myArray = []
+            loadFailed = true
+            pendingAlert = ("Data Load Error", "Pushup Hero could not open its storage folder. Your workout history could not be loaded.")
+            return
+        }
 
-        guard manager.fileExists(atPath: filePath) else {
+        guard FileManager.default.fileExists(atPath: dataURL.path) else {
             print("No existing data file found. Starting fresh.")
             myArray = []
             return
         }
 
-        print("Data file exists. Loading...")
-
         do {
-            // Read the data from file
-            let data = try Data(contentsOf: URL(fileURLWithPath: filePath))
-
-            // Try modern NSSecureCoding first
-            do {
-                let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
-                unarchiver.requiresSecureCoding = false // Allow fallback to old format
-
-                if let loadedArray = try unarchiver.decodeTopLevelObject(of: [NSArray.self, DataObject.self], forKey: NSKeyedArchiveRootObjectKey) as? [DataObject] {
-                    myArray = loadedArray
-                    print("Successfully loaded \(myArray.count) workouts using modern format")
-
-                    // Automatically migrate to new format on next save
-                    // This happens automatically since save() uses the new format
-                } else {
-                    print("ERROR: Could not decode data as array of DataObject")
-                    myArray = []
-                }
-
-                unarchiver.finishDecoding()
-
-            } catch {
-                // Fallback to deprecated method for very old data
-                print("Modern decoding failed, attempting legacy format: \(error.localizedDescription)")
-
-                if let legacyArray = NSKeyedUnarchiver.unarchiveObject(with: data) as? [DataObject] {
-                    myArray = legacyArray
-                    print("Successfully loaded \(myArray.count) workouts using legacy format")
-                    print("Data will be automatically migrated to new format on next save")
-                } else {
-                    print("ERROR: Legacy decoding also failed")
-                    myArray = []
-                    showDataLoadError()
-                }
-            }
-
+            myArray = try DataArchive.read(from: dataURL)
+            loadFailed = false
+            print("Successfully loaded \(myArray.count) workouts")
         } catch {
-            print("ERROR: Failed to read data file: \(error.localizedDescription)")
+            // Do not treat this as an empty history. myArray is left empty so the
+            // UI has something to show, but loadFailed blocks the next save from
+            // overwriting a file we could not read. That flag is the difference
+            // between "you have no workouts yet" and "your workouts are gone".
+            print("ERROR: Failed to load data: \(error.localizedDescription)")
             myArray = []
-            showDataLoadError()
+            loadFailed = true
+            pendingAlert = ("Data Load Error",
+                            "Your workout history could not be read. Nothing has been deleted \u{2014} the original file has been kept, and Pushup Hero will set it aside rather than overwrite it when you save your next workout.")
         }
     }
 
-    func showDataLoadError() {
-        let alert = UIAlertController(
-            title: "Data Load Error",
-            message: "There was a problem loading your workout history. Your data file may be corrupted. Contact support if this persists.",
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        self.present(alert, animated: true)
+    /// Alerts raised during viewDidLoad cannot be presented yet, because the view
+    /// is not in the window hierarchy. They are queued here and shown once it is.
+    func presentPendingAlertIfNeeded() {
+        guard let pending = pendingAlert else { return }
+        pendingAlert = nil
+        presentAlert(title: pending.title, message: pending.message)
     }
-    
+
+    func presentAlert(title: String, message: String) {
+        guard presentedViewController == nil else {
+            // Something else is already on screen; try again once it is gone.
+            pendingAlert = (title, message)
+            return
+        }
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let workout = myArray[indexPath.row]
         let cell: pushupCell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! pushupCell

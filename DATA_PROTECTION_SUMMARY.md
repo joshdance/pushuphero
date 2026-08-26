@@ -4,6 +4,38 @@
 
 This document summarizes the complete data protection and migration system implemented to safeguard user workout data during iOS app upgrades.
 
+## Safety Invariants
+
+These are the rules the implementation is built around. If a change breaks one
+of them, it is a data-loss bug regardless of what the tests say.
+
+1. **User data is never deleted, only moved.** A file that cannot be decoded is
+   moved to `Backups/Quarantine_<reason>_<timestamp>`. If a later build learns
+   to read it, the bytes are still there.
+2. **The live file is replaced only by something already validated.** Recovery
+   decodes and validates a backup *before* it is written over `Data`, and the
+   write is atomic. A folder full of bad backups cannot destroy a good file.
+3. **Validation and loading share one decoder.** `DataArchive.decode` is the
+   only decode path. When a validator and a loader disagree, the validator
+   reports healthy data as corrupt and recovery replaces it with something
+   older — so they are not allowed to disagree.
+4. **A missing version file does not mean a fresh install.** Upgrading from a
+   build that predates version tracking looks identical to a first launch, and
+   that is the launch where a snapshot matters most. The data file's existence
+   decides, not the version file's.
+5. **Corrupt data never becomes a backup.** Validation runs before the snapshot,
+   and identical content is not re-copied, so repeated launches cannot push the
+   last readable copies out of the retention window.
+6. **A failed save changes nothing.** The new workout is written to disk before
+   it is added to the in-memory list, so a failure leaves no trace and a retry
+   cannot record the same workout twice.
+7. **A failed load never silently becomes an empty history.** If the file
+   existed but could not be read, the app refuses to overwrite it — the next
+   save quarantines the original first.
+8. **Archived class names are stable.** `DataObject` is pinned with
+   `@objc(DataObject)` and historical module-qualified names are mapped on read,
+   so renaming the target cannot orphan every existing archive.
+
 ## Implementation Status: ✅ COMPLETE
 
 ### Phase 1: NSSecureCoding Migration (Commit: ea2f6f5)
@@ -51,7 +83,7 @@ DataMigrationManager.shared.performMigrationIfNeeded()
 - Creates automatic backup with reason: "pre_launch"
 - Attempts recovery if validation fails
 - Updates version tracking
-- Cleans up old backups (keeps last 5)
+- Cleans up old backups (keeps the last 5 routine ones; `pre_migration` and `pre_import` snapshots are kept permanently)
 
 #### 2. When App Goes to Background
 ```swift
@@ -110,7 +142,8 @@ Documents/Backups/Data_<reason>_<timestamp>
 - `Data_manual_<timestamp>` - User-initiated backup
 
 **Retention Policy:**
-- Keeps last 5 backups
+- Keeps the last 5 routine backups. Pre-upgrade (`pre_migration`) and pre-import snapshots are exempt from cleanup
+- Skips writing a backup that is byte-identical to the newest one, so repeated launches cannot flush useful history out of the retention window
 - Older backups automatically deleted
 - Sorted by creation date (newest first)
 
@@ -208,9 +241,21 @@ Button: "OK"
 
 #### Migration & Validation
 ```swift
-performMigrationIfNeeded() -> Bool
+performMigrationIfNeeded() -> MigrationOutcome
 ```
-Main entry point. Call on app launch. Returns `false` if recovery failed.
+Main entry point. Call on app launch. Returns what actually happened, because
+"nothing needed doing" and "a backup was restored" are both successes but only
+one of them means the user should go and check their history:
+
+| Case | Meaning |
+| --- | --- |
+| `.freshInstall` | No data file, and no evidence there ever was one. |
+| `.ok(recordCount:)` | Existing data verified intact. |
+| `.upgradedFromLegacy(recordCount:)` | First launch after upgrading from a build without version tracking. A `pre_migration` snapshot has been taken. |
+| `.recovered(from:recordCount:)` | The live file was unusable; a backup was restored. **Tell the user.** |
+| `.failed(reason:)` | Nothing could be restored. The original bytes are quarantined, never deleted. **Tell the user.** |
+
+`outcome.needsUserAttention` is true for the last two.
 
 ```swift
 validateDataFile() -> ValidationResult
@@ -229,10 +274,16 @@ listBackups() -> [BackupInfo]
 Returns array of available backups, sorted newest first.
 
 #### Recovery
+Recovery is internal and runs automatically from `performMigrationIfNeeded()`.
+It walks backups newest-first and **validates each candidate before writing it
+over the live file**, so a folder of bad backups can never destroy good data.
+
 ```swift
-attemptDataRecovery() -> Bool
+quarantineUnreadableDataFile()
 ```
-Tries to recover from most recent valid backup. Returns `true` if successful.
+Moves a data file the app could not decode into the backup folder as
+`Quarantine_<reason>_<timestamp>`. Called by the save path before a write is
+allowed to replace a file that failed to load. Nothing is ever deleted.
 
 #### Manual Operations
 ```swift
@@ -293,7 +344,7 @@ Imports data from user-provided file. Creates safety backup first.
 
 ### Success Patterns
 ```
-✅ First launch detected - initializing data version tracking
+First launch detected - initializing data version tracking
 ✅ Data validation passed - 25 records
 ✅ Backup created: Data_pre_launch_2026-01-15T10-30-00Z
 ✅ Data migration check complete - all data intact
