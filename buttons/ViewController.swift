@@ -29,6 +29,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     @IBOutlet weak var pushupsThisYearLabel: UILabel!
     @IBOutlet weak var pushupsThisMonthLabel: UILabel!
     @IBOutlet weak var saveButton: UIButton!
+    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var dailyBox: UIView!
     @IBOutlet weak var weeklyBox: UIView!
     @IBOutlet weak var monthlyBox: UIView!
@@ -37,18 +38,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     var audioPlayer = AVAudioPlayer()
     
     var holdTimer: Timer!
-    
-    var filePath: String {
-        //manager lets you examine contents of a files and folders in your app.
-        let manager = FileManager.default
-        
-        //returns an array of urls from our documentDirectory and we take the first
-        let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first
-        //print("this is the url path in the document directory \(String(describing: url))")
-        
-        //creates a new path component and creates a new file called "Data" where we store our data array
-        return(url!.appendingPathComponent("Data").path)
-    }
+
+    /// True when the on-disk history existed but could not be decoded. While set,
+    /// the next save quarantines the original file instead of overwriting it.
+    var loadFailed = false
+
+    /// Alert queued from viewDidLoad, shown once the view is on screen.
+    var pendingAlert: (title: String, message: String)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,10 +70,28 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         downLongPressRecognizer.delegate = self
         self.downButton.addGestureRecognizer(downLongPressRecognizer)
         
+        // Tapping the title opens the diagnostics modal. Deliberately undiscoverable:
+        // it is for support, not a feature.
+        titleLabel.isUserInteractionEnabled = true
+        let debugTap = UITapGestureRecognizer(target: self, action: #selector(showDebugInfo))
+        titleLabel.addGestureRecognizer(debugTap)
+        
         setUpViews()
         
         calculatePushupCounts()
 
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        // Surface anything that went wrong during load or launch-time migration
+        // now that there is a window to present into.
+        if let launchAlert = AppDelegate.pendingLaunchAlert {
+            AppDelegate.pendingLaunchAlert = nil
+            pendingAlert = launchAlert
+        }
+        presentPendingAlertIfNeeded()
     }
     
     func setUpViews() {
@@ -294,8 +308,43 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func save(newDataObject: DataObject) {
-        myArray.insert(newDataObject, at: 0)
-        NSKeyedArchiver.archiveRootObject(myArray, toFile: filePath)
+        guard let dataURL = DataArchive.fileURL else {
+            presentAlert(title: "Save Error",
+                         message: "Pushup Hero could not find its storage folder, so this workout was not saved.")
+            return
+        }
+
+        // If the existing history could not be read at launch, writing now would
+        // replace a file we never understood with a single new workout. Preserve
+        // the original bytes first — and if that fails, refuse to save at all.
+        // Blocking one workout is recoverable; overwriting unread history is not.
+        if loadFailed {
+            guard DataMigrationManager.shared.quarantineUnreadableDataFile() else {
+                presentAlert(title: "Cannot Save Yet",
+                             message: "Pushup Hero could not read your existing workout file, and could not set a copy of it aside. Saving now would overwrite it, so this workout has not been saved. Freeing up storage space and reopening the app should resolve this.")
+                return
+            }
+            loadFailed = false
+        }
+
+        // Build the candidate list without touching myArray. Only a write that
+        // actually lands is allowed to change what the app thinks it has, so a
+        // failed save followed by a retry cannot record the workout twice.
+        var candidate = myArray
+        candidate.insert(newDataObject, at: 0)
+
+        do {
+            try DataArchive.write(candidate, to: dataURL)
+        } catch {
+            print("ERROR: Failed to save data: \(error.localizedDescription)")
+            presentAlert(title: "Save Error",
+                         message: "Failed to save this workout, so it has not been recorded. Your previous history is untouched. Please try again.")
+            return
+        }
+
+        myArray = candidate
+        print("Data saved successfully. Total workouts: \(myArray.count)")
+
         pushupTableView.reloadData()
         pushupNumber = 0
         numberLabel.text = String(pushupNumber)
@@ -321,22 +370,64 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func loadData() {
-        let manager = FileManager.default
-        
-        if manager.fileExists(atPath: filePath) {
-            print("The file exists!")
-            
-            //if we can get data back, get our data.
-            let ourData = NSKeyedUnarchiver.unarchiveObject(withFile: filePath) as! Array<DataObject>
-            myArray = ourData
-            
-            print("count of myArray = ", myArray.count)
-            
-        } else {
-            print("The file DOES NOT exist! Mournful trumpets sound...")
+        guard let dataURL = DataArchive.fileURL else {
+            print("ERROR: documents directory unavailable")
+            myArray = []
+            loadFailed = true
+            pendingAlert = ("Data Load Error", "Pushup Hero could not open its storage folder. Your workout history could not be loaded.")
+            return
+        }
+
+        guard FileManager.default.fileExists(atPath: dataURL.path) else {
+            print("No existing data file found. Starting fresh.")
+            myArray = []
+            return
+        }
+
+        do {
+            myArray = try DataArchive.read(from: dataURL)
+            loadFailed = false
+            print("Successfully loaded \(myArray.count) workouts")
+        } catch {
+            // Do not treat this as an empty history. myArray is left empty so the
+            // UI has something to show, but loadFailed blocks the next save from
+            // overwriting a file we could not read. That flag is the difference
+            // between "you have no workouts yet" and "your workouts are gone".
+            print("ERROR: Failed to load data: \(error.localizedDescription)")
+            myArray = []
+            loadFailed = true
+            pendingAlert = ("Data Load Error",
+                            "Your workout history could not be read. Nothing has been deleted \u{2014} the original file has been kept, and Pushup Hero will set it aside rather than overwrite it when you save your next workout.")
         }
     }
-    
+
+    /// Alerts raised during viewDidLoad cannot be presented yet, because the view
+    /// is not in the window hierarchy. They are queued here and shown once it is.
+    func presentPendingAlertIfNeeded() {
+        guard let pending = pendingAlert else { return }
+        pendingAlert = nil
+        presentAlert(title: pending.title, message: pending.message)
+    }
+
+    @objc func showDebugInfo() {
+        let report = DataMigrationManager.shared.debugReport(inMemoryCount: myArray.count,
+                                                             loadFailed: loadFailed)
+        let debugViewController = DebugInfoViewController(report: report)
+        debugViewController.modalPresentationStyle = .fullScreen
+        present(debugViewController, animated: true, completion: nil)
+    }
+
+    func presentAlert(title: String, message: String) {
+        guard presentedViewController == nil else {
+            // Something else is already on screen; try again once it is gone.
+            pendingAlert = (title, message)
+            return
+        }
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let workout = myArray[indexPath.row]
         let cell: pushupCell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! pushupCell

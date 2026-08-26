@@ -36,6 +36,10 @@
 		429EC19620F5D3BB000E7075 /* charging.wav in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BE2060D0890094FABA /* charging.wav */; };
 		429EC19720F5D3BB000E7075 /* scaleup.aif in Resources */ = {isa = PBXBuildFile; fileRef = 424E62BA2060D0890094FABA /* scaleup.aif */; };
 		429F90932537395900703051 /* DataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429F90922537395900703051 /* DataObject.swift */; };
+		42A1001225373959007030A1 /* DebugInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A1001125373959007030A1 /* DebugInfoViewController.swift */; };
+		42A1001325373959007030A1 /* DebugInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A1001125373959007030A1 /* DebugInfoViewController.swift */; };
+		42A1000225373959007030A1 /* DataMigrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A1000125373959007030A1 /* DataMigrationManager.swift */; };
+		42A1000325373959007030A1 /* DataMigrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A1000125373959007030A1 /* DataMigrationManager.swift */; };
 		429F90942537395900703051 /* DataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429F90922537395900703051 /* DataObject.swift */; };
 		429F909A25373B1F00703051 /* Sounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429F909925373B1F00703051 /* Sounds.swift */; };
 		429F909B25373B1F00703051 /* Sounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429F909925373B1F00703051 /* Sounds.swift */; };
@@ -61,6 +65,8 @@
 		429EC19B20F5D3BB000E7075 /* Pushup Hero.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pushup Hero.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		429EC19C20F5D3BB000E7075 /* buttons copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "buttons copy-Info.plist"; path = "/Users/joshua/Code/buttons/buttons copy-Info.plist"; sourceTree = "<absolute>"; };
 		429F90922537395900703051 /* DataObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataObject.swift; sourceTree = "<group>"; };
+		42A1001125373959007030A1 /* DebugInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugInfoViewController.swift; sourceTree = "<group>"; };
+		42A1000125373959007030A1 /* DataMigrationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMigrationManager.swift; sourceTree = "<group>"; };
 		429F909925373B1F00703051 /* Sounds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sounds.swift; sourceTree = "<group>"; };
 		42C8F2A12047DB6800F4486C /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -114,6 +120,8 @@
 				4213EBA320429638009B2C01 /* Info.plist */,
 				424E3A6F205101C100020A8E /* CustomCell.swift */,
 				429F90922537395900703051 /* DataObject.swift */,
+				42A1001125373959007030A1 /* DebugInfoViewController.swift */,
+				42A1000125373959007030A1 /* DataMigrationManager.swift */,
 				429F909925373B1F00703051 /* Sounds.swift */,
 			);
 			path = buttons;
@@ -254,6 +262,8 @@
 			files = (
 				4271A69220F88BE300C4C216 /* ViewController.swift in Sources */,
 				429F90942537395900703051 /* DataObject.swift in Sources */,
+				42A1001225373959007030A1 /* DebugInfoViewController.swift in Sources */,
+				42A1000225373959007030A1 /* DataMigrationManager.swift in Sources */,
 				429F909B25373B1F00703051 /* Sounds.swift in Sources */,
 				4271A69320F88BE300C4C216 /* CustomCell.swift in Sources */,
 				4271A69420F88BE300C4C216 /* AppDelegate.swift in Sources */,
@@ -266,6 +276,8 @@
 			files = (
 				429EC18820F5D3BB000E7075 /* ViewController.swift in Sources */,
 				429F90932537395900703051 /* DataObject.swift in Sources */,
+				42A1001325373959007030A1 /* DebugInfoViewController.swift in Sources */,
+				42A1000325373959007030A1 /* DataMigrationManager.swift in Sources */,
 				429F909A25373B1F00703051 /* Sounds.swift in Sources */,
 				429EC18920F5D3BB000E7075 /* CustomCell.swift in Sources */,
 				429EC18A20F5D3BB000E7075 /* AppDelegate.swift in Sources */,
