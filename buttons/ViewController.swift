@@ -29,6 +29,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     @IBOutlet weak var pushupsThisYearLabel: UILabel!
     @IBOutlet weak var pushupsThisMonthLabel: UILabel!
     @IBOutlet weak var saveButton: UIButton!
+    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var dailyBox: UIView!
     @IBOutlet weak var weeklyBox: UIView!
     @IBOutlet weak var monthlyBox: UIView!
@@ -68,6 +69,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         downLongPressRecognizer.minimumPressDuration = 0.3
         downLongPressRecognizer.delegate = self
         self.downButton.addGestureRecognizer(downLongPressRecognizer)
+        
+        // Tapping the title opens the diagnostics modal. Deliberately undiscoverable:
+        // it is for support, not a feature.
+        titleLabel.isUserInteractionEnabled = true
+        let debugTap = UITapGestureRecognizer(target: self, action: #selector(showDebugInfo))
+        titleLabel.addGestureRecognizer(debugTap)
         
         setUpViews()
         
@@ -395,6 +402,14 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         guard let pending = pendingAlert else { return }
         pendingAlert = nil
         presentAlert(title: pending.title, message: pending.message)
+    }
+
+    @objc func showDebugInfo() {
+        let report = DataMigrationManager.shared.debugReport(inMemoryCount: myArray.count,
+                                                             loadFailed: loadFailed)
+        let debugViewController = DebugInfoViewController(report: report)
+        debugViewController.modalPresentationStyle = .fullScreen
+        present(debugViewController, animated: true, completion: nil)
     }
 
     func presentAlert(title: String, message: String) {

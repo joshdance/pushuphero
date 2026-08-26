@@ -403,3 +403,163 @@ class DataMigrationManager {
         }
     }
 }
+
+// MARK: - Debug Reporting
+
+extension DataMigrationManager {
+
+    /// A plain-text snapshot of everything that determines whether the user's
+    /// history is safe. Intended to be read over a support email, so it favours
+    /// being unambiguous over being short.
+    ///
+    /// Foundation-only on purpose: this lives beside the storage code it
+    /// describes, and the scenario tests compile this file without UIKit.
+    func debugReport(inMemoryCount: Int, loadFailed: Bool) -> String {
+        var lines: [String] = []
+
+        func section(_ title: String) {
+            lines.append("")
+            lines.append("── \(title) ──")
+        }
+
+        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
+
+        lines.append("PUSHUP HERO DIAGNOSTICS")
+        lines.append(Self.displayFormatter.string(from: Date()))
+        lines.append("App \(appVersion) (build \(build))")
+
+        // MARK: App state
+        section("App state")
+        lines.append("Workouts loaded in app: \(inMemoryCount)")
+        lines.append(loadFailed
+            ? "Load status: FAILED — the next save will set the unreadable file aside instead of overwriting it"
+            : "Load status: OK")
+
+        // MARK: Version tracking
+        section("Version tracking")
+        if let version = loadDataVersion() {
+            lines.append("Schema version: \(version.version)")
+            lines.append("Last checked: \(Self.displayFormatter.string(from: version.lastBackupDate))")
+            lines.append("Last app version to run: \(version.appVersion)")
+            if let count = version.recordCount {
+                lines.append("Workouts at last check: \(count)")
+                if inMemoryCount < count {
+                    lines.append("*** WARNING: fewer workouts loaded than last recorded (\(inMemoryCount) < \(count))")
+                }
+            }
+        } else {
+            lines.append("No DataVersion file.")
+            lines.append("Means either a fresh install, or an upgrade that has not launched yet.")
+        }
+
+        // MARK: Data file
+        section("Data file")
+        if let dataURL = DataArchive.fileURL {
+            lines.append("Path: Documents/\(dataURL.lastPathComponent)")
+            if fileManager.fileExists(atPath: dataURL.path) {
+                let attributes = try? fileManager.attributesOfItem(atPath: dataURL.path)
+                let size = (attributes?[.size] as? Int64) ?? 0
+                lines.append("Size: \(Self.formatBytes(size))")
+                if let modified = attributes?[.modificationDate] as? Date {
+                    lines.append("Modified: \(Self.displayFormatter.string(from: modified))")
+                }
+
+                // Which on-disk format is it in? Legacy files are only rewritten
+                // on the first successful save, so this can legitimately still
+                // say "original" straight after an upgrade.
+                if let raw = try? Data(contentsOf: dataURL) {
+                    lines.append("Format: \(Self.describeFormat(raw))")
+                }
+
+                let validation = validateDataFile()
+                if validation.isValid {
+                    lines.append("Validation: PASSED (\(validation.recordCount ?? 0) workouts)")
+                } else {
+                    lines.append("Validation: FAILED — \(validation.error ?? "unknown error")")
+                }
+            } else {
+                lines.append("*** No data file present.")
+            }
+        } else {
+            lines.append("*** Documents directory unavailable.")
+        }
+
+        // MARK: Backups
+        let backups = listBackups()
+        section("Backups (\(backups.count))")
+        if backups.isEmpty {
+            lines.append("None.")
+        } else {
+            let total = backups.reduce(Int64(0)) { $0 + $1.fileSize }
+            lines.append("Total size: \(Self.formatBytes(total))")
+            lines.append("")
+            for backup in backups {
+                let when = backup.timestamp == .distantPast
+                    ? "unknown date"
+                    : Self.displayFormatter.string(from: backup.timestamp)
+                var detail = "• \(backup.reason) — \(when) — \(Self.formatBytes(backup.fileSize))"
+                if let objects = try? DataArchive.read(from: backup.url) {
+                    detail += " — \(objects.count) workouts"
+                } else {
+                    detail += " — UNREADABLE"
+                }
+                lines.append(detail)
+            }
+            lines.append("")
+            lines.append("Kept: last \(routineBackupsToKeep) routine backups.")
+            lines.append("Pre-upgrade and pre-import snapshots are kept permanently.")
+        }
+
+        // MARK: Quarantine
+        let quarantined = quarantinedFiles()
+        if !quarantined.isEmpty {
+            section("Quarantined files (\(quarantined.count))")
+            lines.append("Files that could not be read. Kept, never deleted.")
+            lines.append("")
+            for item in quarantined {
+                lines.append("• \(item)")
+            }
+        }
+
+        section("Storage note")
+        lines.append("All of the above lives inside the app's sandbox.")
+        lines.append("It survives app updates. It does NOT survive deleting the app.")
+
+        return lines.joined(separator: "\n")
+    }
+
+    private func quarantinedFiles() -> [String] {
+        guard let folder = DataArchive.backupFolderURL,
+              let files = try? fileManager.contentsOfDirectory(atPath: folder.path) else {
+            return []
+        }
+        return files.filter { $0.hasPrefix("Quarantine_") }.sorted().reversed()
+    }
+
+    /// Distinguishes an archive written before this version from one written after.
+    private static func describeFormat(_ data: Data) -> String {
+        guard let text = String(data: data, encoding: .isoLatin1) else {
+            return "unrecognised"
+        }
+        if text.contains("Pushup_Hero.DataObject") || text.contains("DataObject") {
+            // Version-stamped records only exist in archives this build wrote.
+            return text.contains("dataVersionKey")
+                ? "current (version-stamped)"
+                : "original (pre-upgrade) — will be rewritten on the next save"
+        }
+        return "unrecognised — does not look like a workout archive"
+    }
+
+    private static func formatBytes(_ bytes: Int64) -> String {
+        if bytes < 1024 { return "\(bytes) bytes" }
+        return String(format: "%.1f KB", Double(bytes) / 1024.0)
+    }
+
+    private static let displayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .medium
+        return formatter
+    }()
+}

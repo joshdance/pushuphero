@@ -209,7 +209,7 @@
                                             <action selector="tappedSaveButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pCh-JZ-nvD"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pushup Hero" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KOe-1w-JAH">
+                                    <label opaque="NO" userInteractionEnabled="YES" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pushup Hero" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KOe-1w-JAH">
                                         <rect key="frame" x="0.0" y="0.0" width="273.5" height="64"/>
                                         <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="29"/>
                                         <color key="textColor" red="0.25882352941176467" green="0.96078431372549022" blue="0.61960784313725492" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -323,6 +323,7 @@
                         <outlet property="pushupsThisYearLabel" destination="Pno-xn-Hy7" id="NmC-8g-t8I"/>
                         <outlet property="pushupsTodayLabel" destination="G4z-2Y-IBb" id="DCp-sy-fdX"/>
                         <outlet property="saveButton" destination="Gl2-lK-UTM" id="OtW-hZ-mmR"/>
+                        <outlet property="titleLabel" destination="KOe-1w-JAH" id="dbg-Ti-tLb"/>
                         <outlet property="upButton" destination="QMv-cW-T75" id="1Gn-VR-6Sj"/>
                         <outlet property="weeklyBox" destination="BHM-fg-ijI" id="HUJ-Po-6Fp"/>
                         <outlet property="yearlyBox" destination="a9Z-bt-bMg" id="hxy-wc-dju"/>
