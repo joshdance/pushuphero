@@ -42,11 +42,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 "Pushup Hero previously recorded \(previous) workouts but can now only find \(count). Nothing has been deleted and older backups are being kept, so please get in touch before this gets overwritten — tap the \"Pushup Hero\" title for diagnostics."
             )
 
-        case .failed(let reason):
+        case .failed(let reason, let preservedAs):
             print("Data recovery failed: \(reason)")
+            // Only claim the original was set aside when it actually was —
+            // when the data file was simply missing, there was nothing to keep.
+            let kept = preservedAs == nil
+                ? "Nothing has been deleted."
+                : "Nothing has been deleted — your original file has been kept."
             AppDelegate.pendingLaunchAlert = (
                 "Workout History Unavailable",
-                "Pushup Hero could not read your workout history and no usable backup was found. Nothing has been deleted — your original file has been set aside, so please contact support before saving new workouts if your history matters to you."
+                "Pushup Hero could not read your workout history and no usable backup was found. \(kept) Please contact support before saving new workouts if your history matters to you."
+            )
+
+        case .recoveryBlocked(let reason):
+            print("Recovery blocked: \(reason)")
+            // Distinct from .failed: backups were never consulted and nothing on
+            // disk was touched, so telling the user "no backup was found" would
+            // be false and might push them into deleting recoverable data.
+            AppDelegate.pendingLaunchAlert = (
+                "Not Enough Space to Load Safely",
+                "Pushup Hero could not read your workout file, and could not set a copy of it aside before doing anything else. Nothing has been changed and your backups are untouched. Freeing up storage space and reopening the app should let it recover your history."
             )
         }
 

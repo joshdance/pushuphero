@@ -190,10 +190,17 @@ check("precondition: the good backup is still readable", mgr.listBackups().count
       "\(mgr.listBackups().count) backups visible")
 
 outcome = mgr.performMigrationIfNeeded()
-if case .failed = outcome {
+if case .recoveryBlocked = outcome {
     check("refused to recover when it could not preserve the original", true)
 } else {
     check("refused to recover when it could not preserve the original", false, "got \(outcome)")
+}
+// The distinction matters: .failed tells the user no backup was found, which
+// would be a lie here — a perfectly good one is sitting right there.
+if case .failed = outcome {
+    check("does not falsely report that no backup was found", false)
+} else {
+    check("does not falsely report that no backup was found", true)
 }
 let survived = (try? Data(contentsOf: DataArchive.fileURL!)) ?? Data()
 check("unreadable original left byte-for-byte intact", survived == unreadable,
@@ -266,10 +273,50 @@ let beforeCount = mgr.listBackups().count
 try! DataArchive.write(makeWorkouts([1, 2]), to: DataArchive.fileURL!)   // history eaten
 _ = mgr.performMigrationIfNeeded()
 let afterCount = mgr.listBackups().count
-check("no backups deleted while workouts are missing", afterCount >= beforeCount,
-      "\(beforeCount) before, \(afterCount) after")
 check("a backup holding the full history survived",
-      mgr.listBackups().contains { (try? DataArchive.read(from: $0.url))?.count == 10 })
+      mgr.listBackups().contains { (try? DataArchive.read(from: $0.url))?.count == 10 },
+      "\(beforeCount) backups before, \(afterCount) after")
+check("every backup richer than the live file was protected",
+      mgr.listBackups().filter { ((try? DataArchive.read(from: $0.url))?.count ?? 0) > 2 }.count >= 1)
+
+// ---------------------------------------------------------------
+print("\n[17] Saving after a loss must not re-raise the alarm every launch")
+resetWorld()
+try! DataArchive.write(makeWorkouts(Array(1...10)), to: DataArchive.fileURL!)
+_ = mgr.performMigrationIfNeeded()                    // peak 10
+
+func launchWith(_ counts: [Int]) -> MigrationOutcome {
+    try! DataArchive.write(makeWorkouts(counts), to: DataArchive.fileURL!)
+    return mgr.performMigrationIfNeeded()
+}
+func alerts(_ o: MigrationOutcome) -> Bool {
+    if case .historyShrank = o { return true }
+    return false
+}
+
+check("the loss itself is reported", alerts(launchWith([1, 2, 3])))
+check("saving a workout while short does not re-alert", !alerts(launchWith([1, 2, 3, 4])))
+check("saving another does not re-alert", !alerts(launchWith([1, 2, 3, 4, 5])))
+check("relaunching unchanged does not re-alert", !alerts(launchWith([1, 2, 3, 4, 5])))
+
+// ---------------------------------------------------------------
+print("\n[18] A genuine NEW loss is always reported, even back to a seen count")
+check("a fresh drop re-alerts", alerts(launchWith([1, 2, 3])))
+check("and again if it drops further", alerts(launchWith([1])))
+
+// ---------------------------------------------------------------
+print("\n[19] Exempt snapshots are protected from rotation but still bounded")
+resetWorld()
+try! DataArchive.write(makeWorkouts(Array(1...20)), to: DataArchive.fileURL!)
+_ = mgr.performMigrationIfNeeded()
+// Repeated real losses, each of which earns an exempt snapshot.
+for n in [15, 14, 13, 12, 11, 10, 9] { _ = launchWith(Array(1...n)) }
+let shrinkSnapshots = mgr.listBackups().filter { $0.reason == "history_shrank" }
+check("history_shrank snapshots do not grow without limit", shrinkSnapshots.count <= 3,
+      "\(shrinkSnapshots.count) kept")
+check("the ones kept are the earliest (closest to full history)",
+      (shrinkSnapshots.compactMap { (try? DataArchive.read(from: $0.url))?.count }.max() ?? 0) >= 14,
+      "\(shrinkSnapshots.compactMap { (try? DataArchive.read(from: $0.url))?.count })")
 
 print("\n================ \(failures == 0 ? "ALL SCENARIOS PASSED" : "\(failures) FAILURE(S)") ================")
 exit(failures == 0 ? 0 : 1)

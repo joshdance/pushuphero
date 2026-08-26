@@ -23,9 +23,13 @@ enum MigrationOutcome {
     case upgradedFromLegacy(recordCount: Int)
     /// The live file was unusable and a backup was restored in its place.
     case recovered(from: String, recordCount: Int)
-    /// The live file was unusable and nothing could be restored. The original
-    /// bytes have been quarantined, never deleted.
-    case failed(reason: String)
+    /// The live file was unusable and nothing could be restored. If the original
+    /// bytes were set aside, the filename says where.
+    case failed(reason: String, originalPreservedAs: String?)
+    /// The live file was unusable AND could not be preserved, so nothing on disk
+    /// was touched. Any backups are untouched and may still be perfectly good —
+    /// this is a storage problem, not a lost-history problem.
+    case recoveryBlocked(reason: String)
     /// Data is readable, but there are fewer workouts than there once were.
     /// The app cannot delete workouts, so this means history was lost somewhere.
     /// Backup cleanup is suspended so the fuller copies are not rotated away.
@@ -34,7 +38,7 @@ enum MigrationOutcome {
     /// True when the user's history may differ from what they last saw.
     var needsUserAttention: Bool {
         switch self {
-        case .recovered, .failed, .historyShrank: return true
+        case .recovered, .failed, .recoveryBlocked, .historyShrank: return true
         case .freshInstall, .ok, .upgradedFromLegacy: return false
         }
     }
@@ -56,6 +60,13 @@ class DataMigrationManager {
     /// point workouts were noticed to be missing.
     static let exemptBackupReasons = ["pre_migration", "pre_import", "history_shrank"]
 
+    /// Exempt snapshots are kept indefinitely, but not infinitely.
+    private let exemptBackupsToKeepPerReason = 3
+
+    /// How many "holds more history than we currently have" backups to protect
+    /// from rotation on top of the routine ones.
+    private let richestBackupsToKeep = 3
+
     private let currentDataVersion = 1
 
     struct DataVersion: Codable {
@@ -68,9 +79,6 @@ class DataMigrationManager {
         /// erase the evidence the moment history shrank — the next launch would
         /// compare against the already-reduced number and see nothing wrong.
         let maxRecordCount: Int?
-        /// The count the user was last warned about, so one loss event produces
-        /// one alert rather than one on every launch until they catch up.
-        let lastShrinkAlert: Int?
     }
 
     struct BackupInfo {
@@ -90,7 +98,7 @@ class DataMigrationManager {
     /// cannot be read is moved into the backup folder rather than removed.
     func performMigrationIfNeeded() -> MigrationOutcome {
         guard let dataURL = DataArchive.fileURL else {
-            return .failed(reason: "Could not locate the documents directory.")
+            return .failed(reason: "Could not locate the documents directory.", originalPreservedAs: nil)
         }
 
         createBackupFolderIfNeeded()
@@ -104,11 +112,11 @@ class DataMigrationManager {
         guard dataFileExists else {
             if savedVersion == nil && listBackups().isEmpty {
                 print("First launch detected - initializing data version tracking")
-                saveDataVersion(recordCount: 0, maxRecordCount: 0, lastShrinkAlert: nil)
+                saveDataVersion(recordCount: 0, maxRecordCount: 0)
                 return .freshInstall
             }
             print("Data file missing but history is expected - attempting recovery")
-            return attemptRecovery(reason: "data file missing")
+            return attemptRecovery(reason: "data file missing", preservedAs: nil)
         }
 
         // Validate before backing up, so a corrupt file never becomes a backup
@@ -121,59 +129,63 @@ class DataMigrationManager {
             // unreadable bytes are preserved. If they are not, leave everything
             // exactly as it is — the backups are still untouched, and a later
             // launch can try again.
-            guard quarantineCurrentDataFile(reason: "corrupt") else {
+            let quarantine = quarantineCurrentDataFile(reason: "corrupt")
+            guard quarantine.isSafeToProceed else {
+                // Nothing on disk was touched. Backups, if any, are untouched
+                // too — so this must not be reported as "no backup was found".
                 print("Aborting recovery - could not preserve the unreadable file first")
-                return .failed(reason: "the existing data file could not be read or set aside")
+                return .recoveryBlocked(reason: validation.error ?? "validation failed")
             }
-            return attemptRecovery(reason: validation.error ?? "validation failed")
+            return attemptRecovery(reason: validation.error ?? "validation failed",
+                                   preservedAs: quarantine.filename)
         }
 
         let isLegacyUpgrade = savedVersion == nil
 
-        // Workouts cannot be deleted in this app, so a count below the highest
-        // we have ever seen means history was lost. Compare against the
-        // high-water mark rather than the last count: the last count is itself
-        // overwritten every launch, which would erase the signal immediately.
+        // Workouts cannot be deleted in this app, so a shortfall means history
+        // was lost. There are two distinct signals here, and conflating them is
+        // what made the alert both nag and miss:
+        //
+        //  - a NEW loss: fewer workouts than the previous launch saw. This just
+        //    happened, so it is worth interrupting the user for.
+        //  - a standing deficit: below the all-time peak. Worth protecting the
+        //    backups for, but the user has already been told, and saving a new
+        //    workout while short must not re-raise the alarm.
+        let previousCount = savedVersion?.recordCount
         let previousMax = savedVersion?.maxRecordCount ?? savedVersion?.recordCount ?? 0
         let highWaterMark = max(records, previousMax)
-        let shrank = records < previousMax
+        let droppedSinceLastLaunch = previousCount.map { records < $0 } ?? false
+        let belowPeak = records < previousMax
 
         // Decide the snapshot's reason before taking it, not after. Backups are
         // deduplicated by content, so a routine snapshot taken first would make
         // the meaningful one a no-op — leaving the evidence tagged "pre_launch"
-        // and eligible for routine cleanup.
+        // and eligible for routine cleanup. Only an actual drop earns the
+        // exempt tag; tagging every below-peak launch would pile up snapshots
+        // that cleanup is never allowed to remove.
         let backupReason: String
         if isLegacyUpgrade {
             backupReason = "pre_migration"
-        } else if shrank {
+        } else if droppedSinceLastLaunch {
             backupReason = "history_shrank"
         } else {
             backupReason = "pre_launch"
         }
         createBackup(reason: backupReason)
 
-        if shrank {
-            print("WARNING: workouts dropped from \(previousMax) to \(records)")
+        saveDataVersion(recordCount: records, maxRecordCount: highWaterMark)
 
-            // Do not run cleanup. One of the surviving backups probably still
-            // holds the fuller history, and rotating it away would turn a
-            // recoverable loss into a permanent one.
-            let alreadyWarned = savedVersion?.lastShrinkAlert == records
-            saveDataVersion(recordCount: records,
-                            maxRecordCount: highWaterMark,
-                            lastShrinkAlert: records)
+        if belowPeak {
+            print("Workouts below the highest seen (\(records) of \(previousMax))")
+        }
+        // Cleanup always runs, but it will not rotate away a backup holding
+        // more workouts than the live file — those are the way back.
+        cleanupOldBackups(liveRecordCount: records)
 
-            if alreadyWarned {
-                print("User already warned about this shortfall - staying quiet")
-                return .ok(recordCount: records)
-            }
+        if droppedSinceLastLaunch {
+            print("WARNING: workouts dropped from \(previousCount ?? 0) to \(records)")
             return .historyShrank(recordCount: records, previousCount: previousMax)
         }
-
-        saveDataVersion(recordCount: records,
-                        maxRecordCount: highWaterMark,
-                        lastShrinkAlert: savedVersion?.lastShrinkAlert)
-        cleanupOldBackups()
 
         if isLegacyUpgrade {
             print("Upgraded from a pre-versioning build - snapshot taken, \(records) records intact")
@@ -247,15 +259,15 @@ class DataMigrationManager {
     /// Walks backups newest-first, validating each one *before* it is written
     /// over the live file. Iterative, so a folder full of bad backups cannot
     /// blow the stack the way mutual recursion did.
-    private func attemptRecovery(reason: String) -> MigrationOutcome {
+    private func attemptRecovery(reason: String, preservedAs: String?) -> MigrationOutcome {
         guard let dataURL = DataArchive.fileURL else {
-            return .failed(reason: "Could not locate the documents directory.")
+            return .failed(reason: "Could not locate the documents directory.", originalPreservedAs: preservedAs)
         }
 
         let candidates = listBackups()
         guard !candidates.isEmpty else {
             print("No backups available for recovery")
-            return .failed(reason: reason)
+            return .failed(reason: reason, originalPreservedAs: preservedAs)
         }
 
         for backup in candidates {
@@ -279,15 +291,18 @@ class DataMigrationManager {
             // fuller backups survive, but mark this count as already-reported:
             // the recovery alert covers it, so the shrink check must not fire
             // a second alert for the same event on the next launch.
+            // Keep the high-water mark so cleanup stays suspended and the
+            // fuller backups survive. The recovery alert already tells the user
+            // what happened, and recording this count as the latest means the
+            // next launch sees no fresh drop and stays quiet.
             let priorMax = loadDataVersion()?.maxRecordCount ?? loadDataVersion()?.recordCount ?? 0
             saveDataVersion(recordCount: objects.count,
-                            maxRecordCount: max(objects.count, priorMax),
-                            lastShrinkAlert: objects.count)
+                            maxRecordCount: max(objects.count, priorMax))
             return .recovered(from: backup.filename, recordCount: objects.count)
         }
 
         print("No usable backup found")
-        return .failed(reason: reason)
+        return .failed(reason: reason, originalPreservedAs: preservedAs)
     }
 
     /// Public entry point for the save path: preserve a data file the app could
@@ -296,9 +311,31 @@ class DataMigrationManager {
     /// Returns false if the bytes could not be preserved. The caller must not
     /// write over the data file in that case — doing so would destroy the only
     /// copy of history the app failed to read.
+    /// What happened to a file we tried to set aside.
+    enum QuarantineOutcome {
+        /// Bytes are safe, at this filename.
+        case preserved(String)
+        /// There was no file to preserve, which is equally safe.
+        case nothingToPreserve
+        /// The bytes could not be preserved. Callers must not overwrite.
+        case failed
+
+        var isSafeToProceed: Bool {
+            switch self {
+            case .preserved, .nothingToPreserve: return true
+            case .failed: return false
+            }
+        }
+
+        var filename: String? {
+            if case .preserved(let name) = self { return name }
+            return nil
+        }
+    }
+
     @discardableResult
     func quarantineUnreadableDataFile() -> Bool {
-        return quarantineCurrentDataFile(reason: "unreadable")
+        return quarantineCurrentDataFile(reason: "unreadable").isSafeToProceed
     }
 
     /// Preserves an unreadable data file instead of deleting it, and reports
@@ -309,17 +346,17 @@ class DataMigrationManager {
     /// copy of history the app could not read, which is the worst outcome this
     /// class exists to prevent.
     @discardableResult
-    private func quarantineCurrentDataFile(reason: String) -> Bool {
+    private func quarantineCurrentDataFile(reason: String) -> QuarantineOutcome {
         guard let dataURL = DataArchive.fileURL,
-              let backupFolder = DataArchive.backupFolderURL else { return false }
+              let backupFolder = DataArchive.backupFolderURL else { return .failed }
 
         // Nothing on disk means there is nothing to lose.
-        guard fileManager.fileExists(atPath: dataURL.path) else { return true }
+        guard fileManager.fileExists(atPath: dataURL.path) else { return .nothingToPreserve }
 
         createBackupFolderIfNeeded()
         guard fileManager.fileExists(atPath: backupFolder.path) else {
             print("Could not quarantine data file: backup folder unavailable")
-            return false
+            return .failed
         }
 
         let destination = uniqueQuarantineURL(in: backupFolder, reason: reason)
@@ -329,7 +366,7 @@ class DataMigrationManager {
         do {
             try fileManager.moveItem(at: dataURL, to: destination)
             print("Quarantined unreadable data file as \(destination.lastPathComponent)")
-            return true
+            return .preserved(destination.lastPathComponent)
         } catch {
             print("Could not move data file to quarantine: \(error.localizedDescription)")
         }
@@ -343,13 +380,13 @@ class DataMigrationManager {
             guard try Data(contentsOf: destination) == original else {
                 try? fileManager.removeItem(at: destination)
                 print("Could not quarantine data file: copy did not verify")
-                return false
+                return .failed
             }
             print("Quarantined a verified copy as \(destination.lastPathComponent)")
-            return true
+            return .preserved(destination.lastPathComponent)
         } catch {
             print("Could not quarantine data file: \(error.localizedDescription)")
-            return false
+            return .failed
         }
     }
 
@@ -414,15 +451,14 @@ class DataMigrationManager {
         return version
     }
 
-    private func saveDataVersion(recordCount: Int, maxRecordCount: Int, lastShrinkAlert: Int?) {
+    private func saveDataVersion(recordCount: Int, maxRecordCount: Int) {
         guard let url = DataArchive.versionFileURL else { return }
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
         let version = DataVersion(version: currentDataVersion,
                                   lastBackupDate: Date(),
                                   appVersion: appVersion,
                                   recordCount: recordCount,
-                                  maxRecordCount: maxRecordCount,
-                                  lastShrinkAlert: lastShrinkAlert)
+                                  maxRecordCount: maxRecordCount)
 
         if let data = try? JSONEncoder().encode(version) {
             try? data.write(to: url, options: .atomic)
@@ -460,13 +496,44 @@ class DataMigrationManager {
     /// Trims routine backups. Pre-upgrade and quarantine snapshots are kept
     /// permanently — they are the ones that matter if an upgrade goes wrong,
     /// and they are created at most once per schema change.
-    private func cleanupOldBackups() {
-        let routine = listBackups().filter { !Self.exemptBackupReasons.contains($0.reason) }
-        guard routine.count > routineBackupsToKeep else { return }
+    /// Trims backups, protecting anything that could still put history back.
+    ///
+    /// `liveRecordCount` is what the data file currently holds. Any backup with
+    /// more workouts than that is a potential way back, so the richest of those
+    /// are kept regardless of age. That is a sharper rule than suspending
+    /// cleanup whenever the count is low: it protects exactly the snapshots
+    /// that matter, and stays bounded instead of accumulating forever.
+    private func cleanupOldBackups(liveRecordCount: Int) {
+        let all = listBackups()
+        let routine = all.filter { !Self.exemptBackupReasons.contains($0.reason) }
 
-        for backup in routine.dropFirst(routineBackupsToKeep) {
+        var keep = Set(routine.prefix(routineBackupsToKeep).map { $0.filename })
+
+        let richer = routine
+            .map { ($0, (try? DataArchive.read(from: $0.url))?.count ?? 0) }
+            .filter { $0.1 > liveRecordCount }
+            .sorted { $0.1 > $1.1 }
+            .prefix(richestBackupsToKeep)
+        if !richer.isEmpty {
+            print("Protecting \(richer.count) backup(s) holding more workouts than the live file")
+        }
+        keep.formUnion(richer.map { $0.0.filename })
+
+        for backup in routine where !keep.contains(backup.filename) {
             try? fileManager.removeItem(at: backup.url)
             print("Removed old backup: \(backup.filename)")
+        }
+
+        // Exempt snapshots are protected from routine rotation, not from all
+        // limits — otherwise a device that keeps losing history would keep
+        // accumulating them forever. Keep the OLDEST of each kind: those sit
+        // closest to the fullest history, which is the whole reason to keep one.
+        for reason in Self.exemptBackupReasons {
+            let matching = all.filter { $0.reason == reason }.sorted { $0.timestamp < $1.timestamp }
+            for backup in matching.dropFirst(exemptBackupsToKeepPerReason) {
+                try? fileManager.removeItem(at: backup.url)
+                print("Removed surplus \(reason) snapshot: \(backup.filename)")
+            }
         }
     }
 
@@ -519,8 +586,7 @@ class DataMigrationManager {
             // the baseline. Otherwise importing an older backup would trip the
             // shrink warning for as long as the user took to catch back up.
             saveDataVersion(recordCount: objects.count,
-                            maxRecordCount: objects.count,
-                            lastShrinkAlert: nil)
+                            maxRecordCount: objects.count)
             return true
         } catch {
             print("Import failed: \(error.localizedDescription)")
@@ -574,7 +640,7 @@ extension DataMigrationManager {
                 lines.append("Most workouts ever seen: \(peak)")
                 if inMemoryCount < peak {
                     lines.append("*** WARNING: \(peak - inMemoryCount) workouts missing versus the highest count seen")
-                    lines.append("*** Backup cleanup is suspended; older backups are being kept")
+                    lines.append("*** Backups holding more workouts than the current file are protected from cleanup")
                 }
             }
         } else {
