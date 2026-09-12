@@ -318,5 +318,27 @@ check("the ones kept are the earliest (closest to full history)",
       (shrinkSnapshots.compactMap { (try? DataArchive.read(from: $0.url))?.count }.max() ?? 0) >= 14,
       "\(shrinkSnapshots.compactMap { (try? DataArchive.read(from: $0.url))?.count })")
 
+// ---------------------------------------------------------------
+print("\n[20] A user-confirmed delete must not be reported as lost history")
+resetWorld()
+try! DataArchive.write(makeWorkouts([1, 2, 3, 4, 5]), to: DataArchive.fileURL!)
+_ = mgr.performMigrationIfNeeded()
+try! DataArchive.write(makeWorkouts([1, 2, 3, 4]), to: DataArchive.fileURL!)
+mgr.recordIntentionalDeletion(remainingCount: 4)
+outcome = mgr.performMigrationIfNeeded()
+if case .ok(let n) = outcome {
+    check("intentional delete is a normal launch, not a shrink alert", true, "\(n) records")
+} else {
+    check("intentional delete is a normal launch, not a shrink alert", false, "got \(outcome)")
+}
+check("diagnostics do not report the deleted set as missing",
+      !mgr.debugReport(inMemoryCount: 4, loadFailed: false).contains("workouts missing"))
+try! DataArchive.write(makeWorkouts([1, 2]), to: DataArchive.fileURL!)
+if case .historyShrank = mgr.performMigrationIfNeeded() {
+    check("a later unexplained drop is still reported", true)
+} else {
+    check("a later unexplained drop is still reported", false)
+}
+
 print("\n================ \(failures == 0 ? "ALL SCENARIOS PASSED" : "\(failures) FAILURE(S)") ================")
 exit(failures == 0 ? 0 : 1)

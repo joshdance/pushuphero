@@ -30,8 +30,9 @@ enum MigrationOutcome {
     /// was touched. Any backups are untouched and may still be perfectly good —
     /// this is a storage problem, not a lost-history problem.
     case recoveryBlocked(reason: String)
-    /// Data is readable, but there are fewer workouts than there once were.
-    /// The app cannot delete workouts, so this means history was lost somewhere.
+    /// Data is readable, but there are fewer workouts than the last recorded
+    /// count. User-initiated deletes update that count first, so they do not
+    /// land here — this means history was lost somewhere unexpected.
     /// Backup cleanup is suspended so the fuller copies are not rotated away.
     case historyShrank(recordCount: Int, previousCount: Int)
 
@@ -142,9 +143,10 @@ class DataMigrationManager {
 
         let isLegacyUpgrade = savedVersion == nil
 
-        // Workouts cannot be deleted in this app, so a shortfall means history
-        // was lost. There are two distinct signals here, and conflating them is
-        // what made the alert both nag and miss:
+        // A shortfall against the last recorded count means history was lost.
+        // User-initiated deletes update that count first, so they do not land
+        // here. There are two distinct signals, and conflating them is what
+        // made the alert both nag and miss:
         //
         //  - a NEW loss: fewer workouts than the previous launch saw. This just
         //    happened, so it is worth interrupting the user for.
@@ -592,6 +594,17 @@ class DataMigrationManager {
             print("Import failed: \(error.localizedDescription)")
             return false
         }
+    }
+
+    /// Call after a user-confirmed delete has been written to disk.
+    ///
+    /// Launch-time checks compare the live file against the last known count.
+    /// An unexplained drop is treated as lost history. A delete the user just
+    /// confirmed is not unexplained, so the stored count — and the high-water
+    /// mark — have to move with it, or the next launch will raise a false alarm
+    /// and diagnostics will report missing workouts that the user removed.
+    func recordIntentionalDeletion(remainingCount: Int) {
+        saveDataVersion(recordCount: remainingCount, maxRecordCount: remainingCount)
     }
 }
 
